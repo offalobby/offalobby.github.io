@@ -1,0 +1,43 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title = site.title, description = site.description } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" data-motion="on" data-theme="field">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#161812" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <script is:inline>
+      // Set motion preference before first paint so nothing animates that shouldn't.
+      (function () {
+        var stored = null;
+        try { stored = localStorage.getItem('archive:motion'); } catch (e) {}
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var on = stored ? stored === 'on' : !reduce;
+        document.documentElement.dataset.motion = on ? 'on' : 'off';
+        document.documentElement.dataset.js = 'on';
+      })();
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

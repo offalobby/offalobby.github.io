@@ -1,0 +1,174 @@
+---
+import Base from '../layouts/Base.astro';
+import RingsFallback from '../components/RingsFallback.astro';
+import Experience from '../experience/Experience';
+import { site, intro, acts, nav } from '../data/site';
+
+const stations = [
+  { href: '#top', numeral: 'I', name: 'Introduction' },
+  { href: '#coursework', numeral: 'II', name: 'Coursework' },
+  { href: '#projects', numeral: 'III', name: 'Projects' },
+  { href: '#research', numeral: 'IV', name: 'Research' },
+  { href: '#about', numeral: 'V', name: 'Archive' },
+];
+const sides = ['right', 'left', 'right', 'left'];
+const year = new Date().getFullYear();
+---
+
+<Base>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="loader" id="loader" aria-hidden="true">
+    <figure>
+      <svg viewBox="-40 -40 80 80">
+        {[8, 15, 22, 29, 36].map((r) => <circle r={r} pathLength="1" />)}
+      </svg>
+      <figcaption>
+        Preparing the specimen<br /><span id="loader-count">0</span> rings counted
+      </figcaption>
+    </figure>
+  </div>
+  <noscript><style>.loader { display: none; }</style></noscript>
+
+  <div class="world" aria-hidden="true">
+    <RingsFallback />
+    <Experience client:only="react" />
+  </div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div class="annotation" aria-hidden="true">
+    <svg><line id="ann-line" x1="0" y1="0" x2="0" y2="0"></line><circle id="ann-dot" r="4"></circle></svg>
+    <span class="annotation-label" id="ann-label">{intro.originLabel}</span>
+  </div>
+
+  <header class="masthead">
+    <a class="wordmark" href="#top">{site.wordmark}</a>
+    <div class="masthead-tools">
+      <button class="tool" id="motion-toggle" type="button" aria-pressed="true">Motion on</button>
+      <button class="tool tool-index" id="index-open" type="button" aria-expanded="false" aria-controls="index">
+        <svg class="glyph" viewBox="0 0 20 20" aria-hidden="true">
+          <circle cx="10" cy="10" r="2.5" fill="none" stroke="currentColor" stroke-width="1"></circle>
+          <circle cx="10" cy="10" r="5.5" fill="none" stroke="currentColor" stroke-width="1"></circle>
+          <circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1"></circle>
+        </svg>
+        Index
+      </button>
+    </div>
+  </header>
+
+  <nav class="gauge" aria-label="Sections">
+    <div class="gauge-track"></div>
+    <div class="gauge-marker"></div>
+    <ol>
+      {
+        stations.map((s, i) => (
+          <li style={`top:${(i / (stations.length - 1)) * 100}%`}>
+            <a href={s.href} data-station={i}>
+              {s.numeral}
+              <span class="gauge-name">{s.name}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+
+  <dl class="readout" aria-hidden="true">
+    <dt>x</dt><dd id="ro-x">0.000</dd>
+    <dt>z</dt><dd id="ro-z">0.000</dd>
+    <dt>ring</dt><dd id="ro-ring">0</dd>
+  </dl>
+
+  <main id="main">
+    <section id="top" class="act hero" data-act="0" aria-labelledby="hero-title">
+      <p class="plate" data-reveal>Plate I. Specimen, oblique view</p>
+      <h1 id="hero-title">
+        {intro.heading.map((line) => <span class="line"><span data-line>{line}</span></span>)}
+      </h1>
+      <div class="hero-meta" data-reveal>
+        <div>
+          <p class="byline">{site.name}<span>{site.role}</span></p>
+          <p class="hero-body">{intro.body}</p>
+        </div>
+        <a class="scroll-cue" href="#coursework"><i aria-hidden="true"></i>Scroll to descend</a>
+      </div>
+    </section>
+
+    {
+      acts.map((act, i) => (
+        <section id={act.id} class="act" data-act={i + 1} data-side={sides[i]} aria-labelledby={`${act.id}-title`}>
+          <div class="act-panel">
+            <p class="plate">{act.plate}</p>
+            <h2 id={`${act.id}-title`}>{act.heading}</h2>
+            {act.body.map((p) => <p>{p}</p>)}
+            {act.placeholder && (
+              <p class="placeholder">
+                <b>Placeholder.</b> {act.placeholder}
+              </p>
+            )}
+            {act.subsections && (
+              <div class="subsections">
+                {act.subsections.map((sub) => (
+                  <div id={sub.id}>
+                    <h3>{sub.heading}</h3>
+                    {sub.body.map((p) => <p>{p}</p>)}
+                    {sub.links && (
+                      <ul class="links">
+                        {sub.links.map((l) =>
+                          l.disabled ? (
+                            <li class="is-disabled">
+                              {l.label}
+                              {l.note && <small>Placeholder: {l.note}</small>}
+                            </li>
+                          ) : (
+                            <li>
+                              <a href={l.href} rel={l.href.startsWith('http') ? 'me noopener' : undefined}>
+                                {l.label}
+                              </a>
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      ))
+    }
+  </main>
+
+  <footer class="colophon">
+    <span>{site.wordmark}, {year}. The archive is still growing.</span>
+    <span>Set in Newsreader, Hanken Grotesk and IBM Plex Mono.</span>
+  </footer>
+
+  <div class="index" id="index" role="dialog" aria-modal="true" aria-labelledby="index-title" hidden>
+    <div class="index-head">
+      <span class="wordmark" id="index-title">Index</span>
+      <button class="tool" id="index-close" type="button">Close</button>
+    </div>
+    <nav aria-label="Site">
+      <ol>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} data-index-link>
+                <span class="label">{item.label}</span>
+                <span class="hint">{item.hint}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+    <p class="index-foot">Press Escape to close.</p>
+  </div>
+
+  <script>
+    import '../scripts/interface';
+  </script>
+</Base>

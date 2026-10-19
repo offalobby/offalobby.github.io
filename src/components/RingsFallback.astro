@@ -1,0 +1,18 @@
+---
+/**
+ * The specimen as a printed woodcut, drawn at build time from the same field
+ * the shader uses. Visible without JavaScript or WebGL; hidden once 3D is up.
+ */
+import { buildRingsSvg } from '../experience/core/ringsSvg';
+const svg = buildRingsSvg(24, 96);
+---
+
+<div class="world-fallback">
+  <svg viewBox={svg.viewBox} role="img" aria-label="Cross-section of a growth specimen, drawn as concentric rings">
+    <path d={svg.outline} fill="#2A2820" />
+    <g fill="none" stroke="#B6AD78" stroke-width="0.022" stroke-linecap="round" opacity="0.8">
+      {svg.rings.map((r) => <path d={r.d} stroke-dasharray={r.dash} />)}
+    </g>
+    <path d={svg.outline} fill="none" stroke="#161812" stroke-width="0.12" opacity="0.8" />
+  </svg>
+</div>
