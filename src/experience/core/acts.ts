@@ -20,6 +20,10 @@ export interface ActPose {
   density: number;
   background: PaletteKey;
   fog: number;
+  /** visibility of the flowing filaments, 0..1 */
+  flow: number;
+  /** heartwood glow strength */
+  glow: number;
 }
 
 export const acts: ActPose[] = [
@@ -33,8 +37,10 @@ export const acts: ActPose[] = [
     print: 0,
     strata: 0.85,
     density: 3.4,
-    background: 'loam',
+    background: 'deep',
     fog: 0.062,
+    flow: 1,
+    glow: 1.0,
   },
   {
     // II. Strata — the camera drops to grazing height so terraces read as layers.
@@ -46,8 +52,10 @@ export const acts: ActPose[] = [
     print: 0,
     strata: 1,
     density: 3.4,
-    background: 'loam',
+    background: 'deep',
     fog: 0.07,
+    flow: 0.75,
+    glow: 0.8,
   },
   {
     // III. Laboratory — rings relax into an interference field.
@@ -59,8 +67,10 @@ export const acts: ActPose[] = [
     print: 0,
     strata: 0.4,
     density: 3.4,
-    background: 'loam',
+    background: 'deep',
     fog: 0.06,
+    flow: 1,
+    glow: 0.6,
   },
   {
     // IV. Research — high, wide, looking across the whole field.
@@ -73,16 +83,18 @@ export const acts: ActPose[] = [
     print: 0,
     strata: 0.6,
     density: 4.2,
-    background: 'loam',
+    background: 'deep',
     fog: 0.05,
+    flow: 0.85,
+    glow: 0.7,
   },
   {
     // V. Archive — straight down; the specimen becomes a woodcut print on paper.
     // In print mode camera and target are offsets from the pith (see CameraRig),
     // so the print sits to the right of the text on wide screens.
     name: 'archive',
-    camera: [-3.1, 15.5, 0.7],
-    target: [-3.1, 0, 0],
+    camera: [-3.7, 15.5, 0.7],
+    target: [-3.7, 0, 0],
     fov: 34,
     wave: 0,
     print: 1,
@@ -90,5 +102,7 @@ export const acts: ActPose[] = [
     density: 5.2,
     background: 'parchment',
     fog: 0.0,
+    flow: 0,
+    glow: 0,
   },
 ];

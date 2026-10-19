@@ -18,7 +18,7 @@ export function createWorldUniforms() {
     uDensity: { value: 3.4 },
     uFog: { value: 0.06 },
     uGrain: { value: 0.035 },
-    uBg: { value: v3('loam') },
+    uBg: { value: v3('deep') },
     uPaper: { value: v3('parchment') },
     uInk: { value: v3('ink') },
     uForest: { value: v3('forest') },
@@ -26,9 +26,16 @@ export function createWorldUniforms() {
     uMoss: { value: v3('moss') },
     uCopper: { value: v3('copper') },
     uLichen: { value: v3('lichen') },
-    uLightDir: { value: new Vector3(-0.55, 0.62, 0.42).normalize() },
+    uOchre: { value: v3('ochre') },
+    uHaze: { value: v3('haze') },
+    uResolution: { value: new Vector2(1, 1) },
+    uGlow: { value: 1 },
+    uFlow: { value: 1 },
+    uFocus: { value: 10 },
+    uPith: { value: new Vector2(0, 0) },
+    uLightDir: { value: new Vector3(-0.7, 0.7, -0.2).normalize() },
     uPixelRatio: { value: 1 },
-    uColor: { value: v3('moss') },
+    uColor: { value: v3('haze') },
   };
 }
 

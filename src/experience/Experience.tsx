@@ -3,6 +3,9 @@ import { Canvas, useThree } from '@react-three/fiber';
 import { PerformanceMonitor } from '@react-three/drei';
 import { Specimen } from './components/Specimen';
 import { Spores } from './components/Spores';
+import { Atmosphere } from './components/Atmosphere';
+import { Filaments } from './components/Filaments';
+import { Effects } from './components/Effects';
 import { CameraRig } from './components/CameraRig';
 import { acts } from './core/acts';
 import { detectTier, hasWebGL } from './core/quality';
@@ -33,7 +36,14 @@ export default function Experience() {
         className="world-canvas"
         dpr={dpr}
         frameloop={motion ? 'always' : 'demand'}
-        gl={{ antialias: tier.antialias, alpha: false, stencil: false, powerPreference: 'high-performance' }}
+        flat
+        gl={{
+          // with post-processing, the composer does its own multisampling
+          antialias: tier.antialias && !tier.post,
+          alpha: false,
+          stencil: false,
+          powerPreference: 'high-performance',
+        }}
         camera={{ fov: acts[0].fov, near: 0.1, far: 80, position: acts[0].camera }}
         onCreated={({ gl }) => {
           gl.domElement.addEventListener('webglcontextlost', (e) => {
@@ -48,8 +58,11 @@ export default function Experience() {
           onIncline={() => setDpr((d) => Math.min(tier.dpr[1], d + 0.25))}
           onFallback={() => setDpr(tier.dpr[0])}
         />
+        <Atmosphere />
         <Specimen tier={tier} />
+        <Filaments count={tier.filaments} octaves={tier.octaves} />
         <Spores count={tier.spores} />
+        {tier.post && <Effects multisampling={tier.antialias ? 4 : 0} />}
         <CameraRig />
         <InputBridge />
       </Canvas>

@@ -11,12 +11,16 @@ export interface QualityTier {
   dpr: [number, number];
   octaves: number;
   antialias: boolean;
+  /** flowing filament count */
+  filaments: number;
+  /** bloom, lens and grain post-processing */
+  post: boolean;
 }
 
 const tiers: Record<QualityTier['name'], QualityTier> = {
-  high: { name: 'high', segments: 340, spores: 1400, dpr: [1, 2], octaves: 3, antialias: true },
-  medium: { name: 'medium', segments: 230, spores: 800, dpr: [1, 1.5], octaves: 3, antialias: true },
-  low: { name: 'low', segments: 150, spores: 380, dpr: [0.85, 1.25], octaves: 2, antialias: false },
+  high: { name: 'high', segments: 340, spores: 1400, dpr: [1, 2], octaves: 3, antialias: true, filaments: 9000, post: true },
+  medium: { name: 'medium', segments: 230, spores: 800, dpr: [1, 1.5], octaves: 3, antialias: true, filaments: 5000, post: true },
+  low: { name: 'low', segments: 150, spores: 380, dpr: [0.85, 1.25], octaves: 2, antialias: false, filaments: 1800, post: false },
 };
 
 export function detectTier(): QualityTier {

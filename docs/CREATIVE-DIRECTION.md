@@ -19,6 +19,25 @@ sequence of laboratory sections cut through it. Everything on screen comes from
 - At the end the specimen flattens into a **woodcut print on paper**, like the
   vintage cross-section plates in the references.
 
+### Light (revision 2.1)
+
+The first pass read as a matte contour map. The look is now built on light:
+
+- **The air is cool, the light is warm.** A painted, mottled atmosphere
+  (deep green, lichen blue-gray, a little madder) after the dark painted
+  reference, with a mist band at the horizon. The terrain fades *into* this
+  same atmosphere, so distance has colour instead of going black.
+- **Filaments.** ~9,000 hairline strands of light flow along the contour lines
+  just above the surface (sap along rings; current along equipotentials).
+  Near the cursor the contours curl into circles, so the strands visibly
+  swirl around it. Stateless and GPU-only: each strand re-traces the field's
+  tangent from a spawn point every life cycle.
+- **Silk, not ink.** No hard isolines on the landscape; strata read through
+  darker risers and dense, smooth, fading fibres. The heartwood glows.
+- **A lens.** Bloom, faint chromatic fringing, film grain and a vignette
+  (`@react-three/postprocessing`), easing off on the paper print. Out-of-focus
+  spores become faint bokeh. Low-tier devices skip post-processing.
+
 So the organic forms and the engineering ideas are not two layers (pretty
 background + technical content). They are the same mathematics, seen from
 different angles. That is the identity: *technology expressed through organic
@@ -104,9 +123,9 @@ Key decisions:
 
 | Situation | Behaviour |
 | --- | --- |
-| Desktop GPU | 340² grid, 1400 spores, DPR up to 2 |
-| Mid / touch devices | 230² grid, 800 spores, DPR ≤ 1.5 |
-| Low (small touch, ≤2 cores, ≤2 GB) | 150² grid, 380 spores, DPR ≤ 1.25, 2 noise octaves, no MSAA |
+| Desktop GPU | 340² grid, 9000 filaments, 1400 spores, bloom + lens, DPR up to 2 |
+| Mid / touch devices | 230² grid, 5000 filaments, 800 spores, bloom + lens, DPR ≤ 1.5 |
+| Low (small touch, ≤2 cores, ≤2 GB) | 150² grid, 1800 filaments, 380 spores, DPR ≤ 1.25, 2 noise octaves, no post-processing |
 | Frame rate drops | drei `PerformanceMonitor` steps DPR down (and back up) |
 | `?quality=low|medium|high` | force a tier, for testing |
 | Reduced motion (OS or toggle) | render on demand only; no time, sway or parallax; camera cuts between acts instead of travelling; intro animations skipped |
