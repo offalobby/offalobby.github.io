@@ -87,12 +87,10 @@ const year = new Date().getFullYear();
         {intro.heading.map((line) => <span class="line"><span data-line>{line}</span></span>)}
       </h1>
       <div class="hero-meta" data-reveal>
-        <div>
-          <p class="byline">{site.name}<span>{site.role}</span></p>
-          <p class="hero-body">{intro.body}</p>
-        </div>
-        <a class="scroll-cue" href="#coursework"><i aria-hidden="true"></i>Scroll to descend</a>
+        <p class="byline">{site.name}<span>{site.role}</span></p>
+        <p class="hero-body">{intro.body}</p>
       </div>
+      <a class="scroll-cue" href="#coursework" data-reveal><i aria-hidden="true"></i>Scroll to descend</a>
     </section>
 
     {

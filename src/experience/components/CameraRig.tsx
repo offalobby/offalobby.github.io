@@ -94,6 +94,11 @@ export function CameraRig() {
     U.uStrata.value = pose.strata;
     U.uDensity.value = pose.density;
     U.uFog.value = pose.fog;
+    U.uFlow.value = pose.flow;
+    U.uGlow.value = pose.glow;
+    U.uPith.value.set(s.pith[0], s.pith[1]);
+    U.uFocus.value = camera.position.distanceTo(tmp.look);
+    gl.getDrawingBufferSize(U.uResolution.value);
     U.uBg.value.set(pose.background[0], pose.background[1], pose.background[2]);
     U.uPixelRatio.value = gl.getPixelRatio();
     tmp.clear.setRGB(pose.background[0], pose.background[1], pose.background[2], SRGBColorSpace);

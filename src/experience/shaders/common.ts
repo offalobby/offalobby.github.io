@@ -85,3 +85,71 @@ float waveField(vec2 p, float t) {
   return s;
 }
 `;
+
+/**
+ * The surface and its contour coordinate, shared by the terrain and the
+ * filaments so filaments ride exactly on the rings the terrain draws.
+ * Requires: fieldGLSL above it, and the uniforms declared here.
+ */
+export const surfaceGLSL = /* glsl */ `
+uniform float uTime;
+uniform vec2  uCenter;   // pith, in warped space
+uniform vec3  uCharge;   // cursor charge: xz position, q
+uniform float uWave;     // 0 = growth rings, 1 = interference field
+uniform float uPrint;    // 0 = landscape, 1 = flat woodcut print
+uniform float uStrata;   // terrace amount
+uniform float uDensity;  // rings per world unit
+
+float surfaceHeight(vec2 p, out float r) {
+  r = ringRadius(p, uCenter, uTime);
+  float dome = 1.75 * exp(-r * r * 0.075) + 0.16 * fbm(p * 0.9 + 3.1);
+  float hRing = terrace(dome, 9.0, uStrata);
+  float hWave = 0.55 + 0.30 * waveField(p, uTime);
+  float h = mix(hRing, hWave, uWave);
+  vec2 dc = p - uCharge.xy;
+  h += uCharge.z * 0.2 * exp(-dot(dc, dc) * 0.9);
+  return h * (1.0 - 0.92 * uPrint);
+}
+
+// Contour coordinate: ring index, morphing toward the wave field, plus the
+// 1/r potential of the cursor charge (equipotential bending).
+float contourAt(vec2 p, float r) {
+  float ringV = r * uDensity;
+  float waveV = waveField(p, uTime) * 2.2 + 40.0;
+  vec2 dc = p - uCharge.xy;
+  float phi = uCharge.z / sqrt(dot(dc, dc) + 0.18);
+  return mix(ringV, waveV, uWave) + phi * 1.3;
+}
+`;
+
+/**
+ * The painterly atmosphere behind (and around) the specimen: a mottled,
+ * brushed ground after the dark painted reference, with a luminous haze band
+ * at the horizon. Pure function so the backdrop and the terrain's fog share it.
+ * Inputs and output are sRGB.
+ */
+export const atmosphereGLSL = /* glsl */ `
+vec3 atmosphere(vec2 uv, float aspect, float t, vec3 deep, vec3 haze, vec3 paper, float print) {
+  vec2 p = vec2(uv.x * aspect, uv.y);
+
+  // brushed mottling: warped fbm at two scales, drifting very slowly
+  vec2 w = vec2(fbm(p * 1.6 + vec2(t * 0.006, 0.0)), fbm(p * 1.6 + vec2(4.3, -t * 0.005)));
+  float dab = fbm(p * 3.4 + w * 1.4);
+  float fine = fbm(p * 9.0 + w * 2.0);
+
+  // vertical structure: dark canopy above, a narrow band of mist at the horizon
+  float horizon = exp(-pow((uv.y - 0.62) * 4.2, 2.0));
+  vec3 col = deep * (0.8 + 0.5 * uv.y);
+  col = mix(col, haze * 0.42, horizon * 0.6);
+
+  // painted dabs: lichen blue-gray, deep moss, a little madder red, as in the reference
+  col = mix(col, vec3(0.20, 0.27, 0.25), smoothstep(0.0, 0.45, -dab) * 0.55);
+  col = mix(col, vec3(0.24, 0.27, 0.15), smoothstep(0.1, 0.5, dab) * 0.45);
+  col = mix(col, vec3(0.27, 0.15, 0.13), smoothstep(0.3, 0.6, fine) * 0.25 * (1.0 - horizon));
+  col += haze * horizon * (0.1 + 0.12 * w.x);
+
+  // paper for the printed archive: warm, faintly fibrous
+  vec3 pap = paper * (0.975 + 0.03 * fine);
+  return mix(col, pap, print);
+}
+`;

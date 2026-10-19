@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { BufferAttribute, BufferGeometry, NormalBlending, ShaderMaterial } from 'three';
+import { AdditiveBlending, BufferAttribute, BufferGeometry, ShaderMaterial } from 'three';
 import { sporesVertex, sporesFragment } from '../shaders/spores';
 import { worldUniforms } from '../core/uniforms';
 
@@ -22,7 +22,7 @@ export function Spores({ count }: { count: number }) {
         uniforms: worldUniforms,
         transparent: true,
         depthWrite: false,
-        blending: NormalBlending,
+        blending: AdditiveBlending,
       }),
     [],
   );

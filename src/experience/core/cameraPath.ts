@@ -11,6 +11,8 @@ export interface SampledPose {
   strata: number;
   density: number;
   fog: number;
+  flow: number;
+  glow: number;
   background: [number, number, number];
 }
 
@@ -24,6 +26,8 @@ export function createSampledPose(): SampledPose {
     strata: 0,
     density: 3,
     fog: 0,
+    flow: 0,
+    glow: 0,
     background: [0, 0, 0],
   };
 }
@@ -63,5 +67,7 @@ export function samplePose(a: number, out: SampledPose): SampledPose {
   out.strata = lerp(A.strata, B.strata, t);
   out.density = lerp(A.density, B.density, t);
   out.fog = lerp(A.fog, B.fog, t);
+  out.flow = lerp(A.flow, B.flow, t);
+  out.glow = lerp(A.glow, B.glow, t);
   return out;
 }

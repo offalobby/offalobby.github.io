@@ -8,6 +8,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { store, subscribe, setMotion, onFrame } from '../experience/core/store';
 
 gsap.registerPlugin(ScrollTrigger);
+// Animations follow wall-clock time even if the GPU is busy, so text never
+// waits on the frame rate to appear.
+gsap.ticker.lagSmoothing(0);
 
 const root = document.documentElement;
 const $ = <T extends Element = HTMLElement>(sel: string) => document.querySelector<T>(sel);

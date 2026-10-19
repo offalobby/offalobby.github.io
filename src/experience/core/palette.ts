@@ -9,6 +9,9 @@ export const palette = {
   moss: '#B6AD78', // earthy moss
   copper: '#AD7A4E', // heartwood copper
   lichen: '#7F8E88', // blue-gray seam (from the layered-formation reference)
+  ochre: '#A69A52', // sunlit moss-gold layers (from the fine-strand reference)
+  haze: '#93A69C', // cool sage-teal mist (the air is cool, the light is warm)
+  deep: '#111814', // painted dark ground of the atmosphere
   parchment: '#F1EBD9', // aged ivory paper
   ink: '#2A2820', // woodcut ink
   loam: '#161812', // darkest ground, near-black with green in it

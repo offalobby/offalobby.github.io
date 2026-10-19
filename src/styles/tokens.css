@@ -65,6 +65,8 @@
   --display: clamp(2.9rem, 1.4rem + 6.2vw, 7.6rem);
 
   --gutter: clamp(1rem, 0.5rem + 2.4vw, 3rem);
+  /* where text columns start: clear of the depth gauge on the left */
+  --inset: calc(var(--gutter) + clamp(0px, 6.5vw, 7.5rem));
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
