@@ -8,7 +8,7 @@
 
 export const site = {
   /** PLACEHOLDER — your full name as it should appear on the site. */
-  name: 'Your Name',
+  name: 'Afolabi Durodola',
   wordmark: 'offalobby',
   role: 'Electrical engineering student',
   title: 'offalobby — an evolving archive',
