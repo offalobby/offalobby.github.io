@@ -1,0 +1,79 @@
+/* Fonts are self-hosted, Latin-subset WOFF2 (SIL Open Font License; see /licenses). */
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../assets/fonts/newsreader-var.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../assets/fonts/newsreader-italic-var.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Hanken Grotesk';
+  src: url('../assets/fonts/hanken-grotesk-var.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('../assets/fonts/plex-mono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('../assets/fonts/plex-mono-500.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+
+:root {
+  /* palette — mirrors src/experience/core/palette.ts */
+  --forest: #343b29;
+  --olive: #767c5a;
+  --moss: #b6ad78;
+  --copper: #ad7a4e;
+  --lichen: #7f8e88;
+  --parchment: #f1ebd9;
+  --ink: #2a2820;
+  --loam: #161812;
+
+  /* roles (dark "field" theme) */
+  --bg: var(--loam);
+  --text: var(--parchment);
+  --text-soft: color-mix(in oklab, var(--parchment) 72%, var(--moss));
+  --text-faint: color-mix(in oklab, var(--parchment) 48%, var(--loam));
+  --rule: color-mix(in oklab, var(--moss) 40%, transparent);
+  --accent: var(--copper);
+  --scrim: color-mix(in oklab, var(--loam) 78%, transparent);
+
+  --serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --sans: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* type scale: 1.25 minor-third steps from 1rem */
+  --step--1: 0.8rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem);
+  --step-3: clamp(2rem, 1.4rem + 2.4vw, 3.3rem);
+  --display: clamp(2.9rem, 1.4rem + 6.2vw, 7.6rem);
+
+  --gutter: clamp(1rem, 0.5rem + 2.4vw, 3rem);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Act V turns the world into paper; the interface follows. */
+:root[data-theme='paper'] {
+  --text: var(--ink);
+  --text-soft: color-mix(in oklab, var(--ink) 78%, var(--olive));
+  --text-faint: color-mix(in oklab, var(--ink) 55%, var(--parchment));
+  --rule: color-mix(in oklab, var(--ink) 30%, transparent);
+  --accent: #8a5a33;
+  --scrim: transparent;
+}

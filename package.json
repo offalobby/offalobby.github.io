@@ -1,0 +1,30 @@
+{
+  "name": "offalobby-archive",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "description": "An evolving archive: immersive 3D portfolio of an electrical engineering student.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.1.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "astro": "^7.4.0",
+    "gsap": "^3.15.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "three": "^0.186.1"
+  },
+  "engines": {
+    "node": ">=22.22"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.186.0"
+  }
+}

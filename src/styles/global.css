@@ -1,0 +1,713 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  transition: color 0.8s var(--ease-out);
+}
+:root[data-motion='off'] {
+  scroll-behavior: auto;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--rule);
+  transition: text-decoration-color 0.25s;
+}
+a:hover {
+  text-decoration-color: currentColor;
+}
+
+:focus-visible {
+  outline: 1.5px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 1px;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  left: var(--gutter);
+  top: 0.75rem;
+  z-index: 100;
+  padding: 0.5rem 0.75rem;
+  background: var(--parchment);
+  color: var(--ink);
+  font: 500 var(--step--1) / 1 var(--mono);
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+
+/* ---------------------------------------------------------------- world -- */
+
+.world {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+.world-canvas {
+  position: absolute !important;
+  inset: 0;
+}
+.world-canvas canvas {
+  display: block;
+}
+
+/* Static specimen: shown without WebGL/JS, hidden once the 3D world is up. */
+.world-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center end;
+  padding-right: 5vw;
+  background:
+    radial-gradient(120% 90% at 60% 40%, color-mix(in oklab, var(--forest) 55%, var(--loam)), var(--loam) 70%);
+}
+.world-fallback svg {
+  width: min(86vmin, 820px);
+  height: auto;
+  opacity: 0.9;
+}
+:root[data-renderer='webgl'][data-ready] .world-fallback {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.6s,
+    visibility 0s 0.6s;
+}
+
+/* film grain and lens falloff, laid over the canvas */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.45  0 0 0 1.2 -0.1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(130% 100% at 55% 45%, transparent 55%, rgb(8 9 6 / 0.55));
+  transition: opacity 1s;
+}
+:root[data-theme='paper'] .vignette {
+  opacity: 0.25;
+}
+
+/* --------------------------------------------------------------- header -- */
+
+.masthead {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: calc(0.9rem + env(safe-area-inset-top)) var(--gutter) 0;
+  pointer-events: none;
+}
+.masthead > * {
+  pointer-events: auto;
+}
+.wordmark {
+  font: italic 400 var(--step-1) / 1 var(--serif);
+  letter-spacing: 0.005em;
+  text-decoration: none;
+}
+.masthead-tools {
+  display: flex;
+  gap: clamp(1rem, 2vw, 2rem);
+  align-items: baseline;
+}
+.tool {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  padding: 0.35rem 0;
+  cursor: pointer;
+  font: 400 var(--step--1) / 1 var(--mono);
+  letter-spacing: 0.01em;
+  color: var(--text-soft);
+}
+.tool:hover {
+  color: var(--text);
+}
+.tool-index {
+  color: var(--text);
+  display: inline-flex;
+  gap: 0.6em;
+  align-items: center;
+}
+.tool-index .glyph {
+  width: 1.4em;
+  height: 1.4em;
+}
+
+/* ---------------------------------------------------------- depth gauge -- */
+/* A core-sample ruler on the left edge: where you are in the journey. */
+
+.gauge {
+  position: fixed;
+  z-index: 15;
+  left: var(--gutter);
+  top: 50%;
+  translate: 0 -50%;
+  height: min(52vh, 440px);
+  width: 3.2rem;
+}
+.gauge-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 9px;
+  background: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px 8px);
+  mask: linear-gradient(to bottom, transparent, #000 6%, #000 94%, transparent);
+}
+.gauge-marker {
+  position: absolute;
+  left: -4px;
+  top: 0;
+  width: 17px;
+  height: 1.5px;
+  background: var(--accent);
+  translate: 0 calc(var(--progress, 0) * min(52vh, 440px));
+}
+.gauge ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  inset: 0;
+}
+.gauge li {
+  position: absolute;
+  left: 0;
+  translate: 0 -50%;
+}
+.gauge a {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.3rem 0.4rem 0.3rem 0;
+  text-decoration: none;
+  font: 400 0.72rem / 1 var(--mono);
+  color: var(--text-faint);
+  transition: color 0.3s;
+}
+.gauge a::before {
+  content: '';
+  width: 14px;
+  height: 1px;
+  background: currentColor;
+}
+.gauge a[aria-current='true'] {
+  color: var(--text);
+}
+.gauge .gauge-name {
+  opacity: 0;
+  translate: -4px 0;
+  transition:
+    opacity 0.3s,
+    translate 0.3s var(--ease-out);
+  white-space: nowrap;
+}
+.gauge a:hover .gauge-name,
+.gauge a:focus-visible .gauge-name,
+.gauge a[aria-current='true'] .gauge-name {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* --------------------------------------------------------------- readout -- */
+
+.readout {
+  position: fixed;
+  z-index: 15;
+  right: var(--gutter);
+  bottom: calc(1.1rem + env(safe-area-inset-bottom));
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 0.9rem;
+  font: 400 0.7rem / 1.55 var(--mono);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  pointer-events: none;
+}
+.readout dt {
+  text-align: left;
+}
+.readout dd {
+  margin: 0;
+  min-width: 6ch;
+}
+
+/* live instruments only make sense when the live specimen is there */
+:root:not([data-renderer='webgl']) .annotation,
+:root:not([data-renderer='webgl']) .readout {
+  display: none;
+}
+
+/* pith annotation: a leader line from a caption to the specimen */
+.annotation {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: var(--annotation, 0);
+}
+.annotation svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.annotation line {
+  stroke: var(--parchment);
+  stroke-width: 0.75;
+  opacity: 0.7;
+}
+.annotation circle {
+  fill: none;
+  stroke: var(--parchment);
+  stroke-width: 0.75;
+}
+.annotation-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font: 400 0.72rem / 1.4 var(--mono);
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ acts -- */
+
+main {
+  position: relative;
+  z-index: 5;
+  /* the scrims bleed past the panels; keep them from widening the page.
+     clip (not hidden) so position: sticky still works */
+  overflow-x: clip;
+}
+
+.act {
+  position: relative;
+  min-height: 170svh;
+  padding: 0 var(--gutter);
+}
+
+.plate {
+  font: 400 var(--step--1) / 1.4 var(--mono);
+  color: var(--text-soft);
+  margin: 0 0 1.4rem;
+}
+
+/* Act I: the opening plate */
+.act.hero {
+  min-height: 100svh;
+  display: grid;
+  align-content: end;
+  padding-bottom: clamp(4.5rem, 10vh, 7rem);
+  padding-left: calc(var(--gutter) + clamp(0px, 5vw, 5.5rem));
+}
+.hero h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: var(--display);
+  line-height: 0.94;
+  letter-spacing: -0.02em;
+  font-variation-settings: 'opsz' 72;
+  max-width: 11ch;
+  text-wrap: balance;
+}
+.hero h1 .line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.hero h1 .line > span {
+  display: block;
+}
+.hero-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 34ch) auto;
+  gap: 1.5rem clamp(2rem, 6vw, 6rem);
+  align-items: end;
+  margin-top: clamp(1.6rem, 3.5vh, 2.6rem);
+}
+.byline {
+  margin: 0 0 0.5rem;
+  font: 400 var(--step-1) / 1.3 var(--serif);
+}
+.byline span {
+  display: block;
+  font: 400 var(--step--1) / 1.5 var(--mono);
+  color: var(--text-soft);
+  margin-top: 0.3rem;
+}
+.hero-body {
+  margin: 0;
+  color: var(--text-soft);
+  max-width: 34ch;
+}
+.scroll-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font: 400 var(--step--1) / 1 var(--mono);
+  color: var(--text-soft);
+  text-decoration: none;
+  justify-self: start;
+}
+.scroll-cue i {
+  width: 1px;
+  height: 2.6rem;
+  background: linear-gradient(to bottom, transparent, currentColor);
+  transform-origin: top;
+  animation: cue 2.6s var(--ease-out) infinite;
+}
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+  }
+  60%,
+  100% {
+    transform: scaleY(1);
+    opacity: 0;
+  }
+}
+
+/* Acts II–V: an annotation panel set against the specimen */
+.act-panel {
+  position: sticky;
+  top: clamp(5rem, 16vh, 9rem);
+  width: min(100%, 31rem);
+  padding: 1.6rem 0 2rem;
+  margin-top: 30svh;
+  isolation: isolate;
+}
+.act-panel::before {
+  /* soft local scrim so text never sits on raw texture; no box, no border */
+  content: '';
+  position: absolute;
+  inset: -4rem -5rem;
+  z-index: -1;
+  background: radial-gradient(closest-side, var(--scrim) 55%, transparent);
+  filter: blur(8px);
+  transition: background 0.8s;
+}
+.act[data-side='right'] .act-panel {
+  margin-left: auto;
+  margin-right: clamp(0rem, 4vw, 4rem);
+}
+.act[data-side='left'] .act-panel {
+  margin-left: calc(clamp(0px, 5vw, 5.5rem));
+}
+.act h2 {
+  margin: 0 0 1.1rem;
+  font: 300 var(--step-3) / 1.04 var(--serif);
+  letter-spacing: -0.012em;
+  font-variation-settings: 'opsz' 60;
+  text-wrap: balance;
+}
+.act p {
+  margin: 0 0 0.9rem;
+  color: var(--text-soft);
+  max-width: 60ch;
+}
+.placeholder {
+  margin-top: 1.3rem !important;
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--accent);
+  font: 400 var(--step--1) / 1.55 var(--mono);
+  color: var(--text-soft) !important;
+}
+.placeholder b {
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.subsections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 1.8rem 2.4rem;
+  margin-top: 2.2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--rule);
+}
+.subsections h3 {
+  margin: 0 0 0.5rem;
+  font: 400 var(--step-1) / 1.2 var(--serif);
+}
+.subsections p {
+  font-size: 0.94rem;
+}
+.links {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+  font: 400 0.86rem / 1.4 var(--mono);
+}
+.links .is-disabled {
+  color: var(--text-faint);
+}
+.links .is-disabled small {
+  display: block;
+  font-size: 0.72rem;
+}
+
+/* last act ends the page, no extra runway */
+.act:last-of-type {
+  min-height: 140svh;
+}
+.colophon {
+  position: relative;
+  z-index: 5;
+  padding: 3rem var(--gutter) calc(2rem + env(safe-area-inset-bottom));
+  font: 400 0.72rem / 1.6 var(--mono);
+  color: var(--text-faint);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+}
+
+/* ----------------------------------------------------------------- index -- */
+/* The menu is a printed index: parchment, set like the back of a monograph. */
+
+.index {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--parchment);
+  color: var(--ink);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: calc(0.9rem + env(safe-area-inset-top)) var(--gutter) calc(1.5rem + env(safe-area-inset-bottom));
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition:
+    clip-path 0.7s var(--ease-out),
+    visibility 0s 0.7s;
+  --text-faint: color-mix(in oklab, var(--ink) 55%, var(--parchment));
+  --rule: color-mix(in oklab, var(--ink) 25%, transparent);
+  --accent: #8a5a33;
+}
+.index[hidden] {
+  display: none;
+}
+.index[data-open] {
+  clip-path: inset(0 0 0 0);
+  visibility: visible;
+  transition: clip-path 0.7s var(--ease-out);
+}
+:root[data-motion='off'] .index {
+  transition: none;
+}
+.index-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.index-head .tool {
+  color: var(--ink);
+}
+.index nav {
+  align-self: center;
+  width: min(100%, 64rem);
+  margin: 0 auto;
+}
+.index ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: entry;
+}
+.index li {
+  border-top: 1px solid var(--rule);
+}
+.index li:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+.index a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 1rem;
+  padding: clamp(0.45rem, 1.3vh, 0.9rem) 0;
+  text-decoration: none;
+}
+.index a .label {
+  font: 300 clamp(1.9rem, 1.2rem + 3.4vw, 4rem) / 1 var(--serif);
+  letter-spacing: -0.015em;
+  transition: translate 0.4s var(--ease-out);
+}
+.index a .hint {
+  font: 400 0.78rem / 1.3 var(--mono);
+  color: var(--text-faint);
+  text-align: right;
+}
+.index a:hover .label,
+.index a:focus-visible .label {
+  translate: 0.4em 0;
+  font-style: italic;
+}
+.index-foot {
+  font: 400 0.72rem / 1.5 var(--mono);
+  color: var(--text-faint);
+}
+
+/* ---------------------------------------------------------------- loader -- */
+
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: var(--loam);
+  color: var(--parchment);
+  transition:
+    opacity 0.9s var(--ease-out),
+    visibility 0s 0.9s;
+}
+.loader[data-done] {
+  opacity: 0;
+  visibility: hidden;
+}
+.loader figure {
+  margin: 0;
+  display: grid;
+  justify-items: center;
+  gap: 1.1rem;
+}
+.loader svg {
+  width: 74px;
+  height: 74px;
+}
+.loader circle {
+  fill: none;
+  stroke: var(--moss);
+  stroke-width: 0.6;
+  opacity: 0.85;
+}
+.loader figcaption {
+  font: 400 0.72rem / 1.5 var(--mono);
+  color: color-mix(in oklab, var(--parchment) 60%, var(--loam));
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------ responsive -- */
+
+@media (max-width: 760px) {
+  .gauge,
+  .readout {
+    display: none;
+  }
+  .act.hero {
+    min-height: 100svh;
+    padding-left: var(--gutter);
+    padding-bottom: 3.5rem;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 35% 0 0 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, transparent, var(--scrim) 45%);
+  }
+  .hero-meta {
+    grid-template-columns: 1fr;
+  }
+  .act-panel,
+  .act[data-side='left'] .act-panel,
+  .act[data-side='right'] .act-panel {
+    margin-left: 0;
+    margin-right: 0;
+    top: auto;
+    position: relative;
+    margin-top: 55svh;
+  }
+  .act {
+    min-height: 140svh;
+  }
+  .index a {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+  .index a .hint {
+    text-align: left;
+  }
+  .annotation {
+    display: none;
+  }
+  /* on phones the print sits above the text; give the text paper to sit on */
+  :root[data-theme='paper'] .act-panel::before {
+    inset: -1.5rem calc(-1 * var(--gutter));
+    background: color-mix(in oklab, var(--parchment) 90%, transparent);
+    filter: blur(10px);
+  }
+  .act:last-of-type .act-panel {
+    margin-top: 62svh;
+  }
+  .world-fallback {
+    place-items: start center;
+    padding: 4rem 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+:root[data-motion='off'] .scroll-cue i {
+  animation: none;
+  transform: none;
+}
