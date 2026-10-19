@@ -52,6 +52,8 @@ export function CameraRig() {
     U.uTime.value = s.time;
     const target = motion ? store.act : Math.round(store.act);
     s.act = motion ? s.act + (target - s.act) * (1 - Math.exp(-dt * 3.2)) : target;
+    // the easing is asymptotic: land exactly, so no trace of one act lingers in the next
+    if (Math.abs(target - s.act) < 0.004) s.act = target;
     const pose = samplePose(Math.min(s.act, lastAct), tmp.pose);
 
     // ---- pith (re-located occasionally; the warp drifts very slowly) -------
@@ -90,7 +92,8 @@ export function CameraRig() {
 
     // ---- field uniforms ----------------------------------------------------
     U.uWave.value = pose.wave;
-    U.uPrint.value = pose.print;
+    // reach full paper slightly before the camera fully settles
+    U.uPrint.value = Math.min(1, pose.print * 1.06);
     U.uStrata.value = pose.strata;
     U.uDensity.value = pose.density;
     U.uFog.value = pose.fog;

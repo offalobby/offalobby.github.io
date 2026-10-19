@@ -128,6 +128,11 @@ a:hover {
 :root[data-theme='paper'] .vignette {
   opacity: 0.25;
 }
+/* the 3D lens adds its own grain and vignette */
+:root[data-renderer='webgl'] .grain,
+:root[data-renderer='webgl'] .vignette {
+  display: none;
+}
 
 /* --------------------------------------------------------------- header -- */
 

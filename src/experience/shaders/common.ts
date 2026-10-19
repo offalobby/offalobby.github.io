@@ -148,8 +148,11 @@ vec3 atmosphere(vec2 uv, float aspect, float t, vec3 deep, vec3 haze, vec3 paper
   col = mix(col, vec3(0.27, 0.15, 0.13), smoothstep(0.3, 0.6, fine) * 0.25 * (1.0 - horizon));
   col += haze * horizon * (0.1 + 0.12 * w.x);
 
-  // paper for the printed archive: warm, faintly fibrous
-  vec3 pap = paper * (0.975 + 0.03 * fine);
+  // paper for the printed archive: still (no drift), faintly fibrous, a little
+  // warmer toward the middle where the plate sits, like light settling on it
+  float tooth = fbm(vec2(uv.x * aspect, uv.y) * 14.0) * 0.5 + fbm(vec2(uv.x * aspect, uv.y) * 3.0) * 0.5;
+  float warmth = exp(-pow(length((uv - vec2(0.62, 0.5)) * vec2(aspect, 1.0)) * 1.4, 2.0));
+  vec3 pap = paper * (0.985 + 0.018 * tooth) * mix(vec3(0.985, 0.975, 0.96), vec3(1.0, 0.985, 0.95), warmth);
   return mix(col, pap, print);
 }
 `;

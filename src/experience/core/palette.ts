@@ -13,7 +13,7 @@ export const palette = {
   haze: '#93A69C', // cool sage-teal mist (the air is cool, the light is warm)
   deep: '#111814', // painted dark ground of the atmosphere
   parchment: '#F1EBD9', // aged ivory paper
-  ink: '#2A2820', // woodcut ink
+  ink: '#27301F', // engraving ink: a deep green-black, kin to the forest
   loam: '#161812', // darkest ground, near-black with green in it
 } as const;
 

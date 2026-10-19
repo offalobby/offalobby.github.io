@@ -49,6 +49,7 @@ uniform float uFog;
 uniform float uGlow;
 uniform vec2  uResolution;
 uniform vec3  uCharge;
+uniform vec2  uPith;
 uniform vec3  uBg;
 uniform vec3  uHaze;
 uniform vec3  uPaper;
@@ -129,17 +130,40 @@ void main() {
   vec2 dc = q - uCharge.xy;
   col += vec3(1.0, 0.86, 0.58) * uCharge.z * exp(-dot(dc, dc) * 2.2) * 0.22;
 
-  // ---- woodcut print (Act V) ---------------------------------------------
-  float ang = atan(q.y, q.x);
-  float edge = 4.0 + 0.22 * vnoise(vec2(ang * 3.0, 1.0)) + 0.06 * vnoise(vec2(ang * 28.0, 4.0));
-  float inside = 1.0 - smoothstep(edge - 0.015, edge + 0.015, vR);
-  float bark = smoothstep(edge - 0.32, edge - 0.05, vR + 0.08 * vnoise(q * 22.0));
-  float breakup = smoothstep(-0.55, 0.1, vnoise(q * 2.2 + band * 1.7)) * smoothstep(-0.7, -0.2, vnoise(q * 9.0));
-  float gaps = isoline(v, 1.3) * breakup * (1.0 - bark);
-  float crack = (1.0 - smoothstep(0.0, 0.012, abs(sin(ang * 1.0 + 0.9 + 0.08 * vnoise(q * 3.0)))))
-              * smoothstep(0.6, 1.4, vR) * step(0.0, cos(ang + 0.9));
-  vec3 printCol = mix(uInk, uPaper * 0.96, clamp(gaps + crack * (1.0 - bark), 0.0, 1.0));
-  printCol = mix(uPaper, printCol, inside);
+  // ---- printed plate (Act V): a quiet engraving on paper ----------------
+  // Angles are taken around the pith and noise is sampled on a circle, so the
+  // outline has no seam. Ink is a deep green, not black; the plate is mostly
+  // a pale wash with fine continuous rings, darkening only at the bark.
+  vec2 pq = q - uPith;
+  float ang = atan(pq.y, pq.x);
+  vec2 circ = vec2(cos(ang), sin(ang));
+  float edge = 4.0 + 0.2 * vnoise(circ * 1.6 + 2.0) + 0.05 * vnoise(circ * 9.0 + 7.0) + 0.015 * vnoise(circ * 40.0);
+  float aaR = fwidth(vR);
+  float inside = 1.0 - smoothstep(edge - aaR, edge + aaR, vR);
+  float bark = smoothstep(edge - 0.3, edge - 0.04, vR + 0.04 * vnoise(q * 16.0));
+
+  float wash = 0.07 + 0.05 * hb + 0.06 * smoothstep(0.55, 1.0, f);       // latewood a shade darker
+  float weight = mix(0.7, 1.5, step(0.72, hb));                            // some rings cut heavier
+  float rings = isoline(v, weight) * (0.7 + 0.3 * smoothstep(-0.4, 0.3, vnoise(q * 2.5 + band)));
+  float grain = strands(v, 4.0, q, 3.3);
+  float split = (1.0 - smoothstep(0.0, 0.01, abs(sin(ang + 0.9 + 0.06 * vnoise(q * 3.0)))))
+              * smoothstep(0.7, 1.6, vR) * step(0.0, cos(ang + 0.9)) * (1.0 - bark);
+  float inkAmt = clamp(wash + rings * 0.62 + grain * 0.12, 0.0, 1.0);
+  inkAmt = mix(inkAmt, 0.8 + 0.1 * vnoise(q * 30.0), bark);
+  inkAmt *= 1.0 - split * 0.7;
+
+  vec3 printCol = mix(uPaper, uInk, inkAmt * inside);
+  // the heartwood keeps a little of its warmth, printed in copper
+  printCol = mix(printCol, mix(uPaper, uCopper, 0.6), heart * 0.55 * inside * (1.0 - rings * 0.5));
+
+  // the outermost ring, still growing: a copper hairline just outside the bark,
+  // with a slow light travelling around it
+  float ringD = abs(vR - (edge + 0.14)) / max(aaR, 1e-4);
+  float growth = 1.0 - smoothstep(0.6, 1.6, ringD);
+  float travel = fract(ang / 6.2831853 - uTime * 0.012);
+  float pulse = 0.45 + 0.55 * exp(-pow((1.0 - travel) * 9.0, 2.0)) + 0.55 * exp(-pow(travel * 30.0, 2.0));
+  printCol = mix(printCol, uCopper * 0.95, growth * pulse * (1.0 - inside));
+
   col = mix(col, printCol, uPrint);
 
   // ---- atmosphere: fade into the same painted haze as the backdrop -------

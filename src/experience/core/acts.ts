@@ -93,8 +93,8 @@ export const acts: ActPose[] = [
     // In print mode camera and target are offsets from the pith (see CameraRig),
     // so the print sits to the right of the text on wide screens.
     name: 'archive',
-    camera: [-3.7, 15.5, 0.7],
-    target: [-3.7, 0, 0],
+    camera: [-4.4, 17.5, 0.7],
+    target: [-4.4, 0, 0],
     fov: 34,
     wave: 0,
     print: 1,
