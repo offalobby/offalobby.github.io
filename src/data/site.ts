@@ -96,7 +96,7 @@ export const acts: ActContent[] = [
         body: ['Code, notes and work in progress are on GitHub.'],
         links: [
           { label: 'GitHub', href: 'https://github.com/offalobby' },
-          { label: 'Email', href: 'mailto:', disabled: true, note: 'set your address in src/data/site.ts' },
+          { label: 'Email', href: 'mailto:ad207@rice.edu' },
         ],
       },
     ],
