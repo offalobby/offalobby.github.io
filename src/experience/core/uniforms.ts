@@ -1,4 +1,4 @@
-import { Vector2, Vector3 } from 'three';
+import { Vector2, Vector3, type Texture } from 'three';
 import { palette, hexToRgb, type PaletteKey } from './palette';
 
 const v3 = (k: PaletteKey) => new Vector3(...hexToRgb(palette[k]));
@@ -33,6 +33,8 @@ export function createWorldUniforms() {
     uFlow: { value: 1 },
     uFocus: { value: 10 },
     uPith: { value: new Vector2(0, 0) },
+    /** half-size painted atmosphere, written by <Atmosphere /> each frame */
+    uAtmos: { value: null as Texture | null },
     uLightDir: { value: new Vector3(-0.7, 0.7, -0.2).normalize() },
     uPixelRatio: { value: 1 },
     uColor: { value: v3('haze') },

@@ -1,5 +1,6 @@
-import { useEffect, useMemo } from 'react';
-import { AdditiveBlending, BufferAttribute, BufferGeometry, ShaderMaterial } from 'three';
+import { useEffect, useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { type Points, AdditiveBlending, BufferAttribute, BufferGeometry, ShaderMaterial } from 'three';
 import { sporesVertex, sporesFragment } from '../shaders/spores';
 import { worldUniforms } from '../core/uniforms';
 
@@ -35,5 +36,11 @@ export function Spores({ count }: { count: number }) {
     [geometry, material],
   );
 
-  return <points geometry={geometry} material={material} frustumCulled={false} />;
+  // fully faded out (on the paper print): skip the draw instead of shading nothing
+  const ref = useRef<Points>(null);
+  useFrame(() => {
+    if (ref.current) ref.current.visible = worldUniforms.uPrint.value < 0.998;
+  });
+
+  return <points ref={ref} geometry={geometry} material={material} frustumCulled={false} />;
 }

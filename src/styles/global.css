@@ -467,8 +467,8 @@ main {
   position: absolute;
   inset: -4rem -5rem;
   z-index: -1;
-  background: radial-gradient(closest-side, var(--scrim) 55%, transparent);
-  filter: blur(8px);
+  /* already soft; a blur filter here was re-rasterised on every scroll frame */
+  background: radial-gradient(closest-side, var(--scrim) 50%, transparent);
   transition: background 0.8s;
 }
 .act[data-side='right'] .act-panel {
@@ -741,8 +741,7 @@ main {
   /* on phones the print sits above the text; give the text paper to sit on */
   :root[data-theme='paper'] .act-panel::before {
     inset: -1.5rem calc(-1 * var(--gutter));
-    background: color-mix(in oklab, var(--parchment) 90%, transparent);
-    filter: blur(10px);
+    background: radial-gradient(closest-side, color-mix(in oklab, var(--parchment) 90%, transparent) 70%, transparent);
   }
   .act:last-of-type .act-panel {
     margin-top: 62svh;
