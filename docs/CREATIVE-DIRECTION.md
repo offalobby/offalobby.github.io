@@ -148,9 +148,11 @@ device struggles; tiers already trade it off. The three.js + R3F bundle is
 - **Branch on uniforms.** Landscape and print shading sit behind `uPrint`
   branches, so neither is paid for when it is invisible; fully faded strands
   and spores are not drawn at all.
-- **Tone-map before grain.** Overlapping additive strands exceed 1.0; the
-  grain's soft-light blend turned those pixels into flickering blue noise.
-  A neutral tone-mapping step (identity below ~0.76) now runs first.
+- **The blue sparks are a feature.** Overlapping additive strands exceed 1.0,
+  and the grain's soft-light blend flips those pixels to flickering blue-white
+  sparks. This was briefly removed as a glitch and restored on request: it
+  reads as arcing where the current is densest. Don't add tone mapping before
+  the grain unless you want them gone.
 - **Anything tied to the camera updates every frame** (the pith annotation),
   and nothing reads layout inside the frame callback.
 - **Damp inputs that drive the whole field.** The cursor charge has a speed
