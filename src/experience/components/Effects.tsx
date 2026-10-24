@@ -5,12 +5,10 @@ import {
   Bloom,
   ChromaticAberration,
   Noise,
-  ToneMapping,
   Vignette,
 } from '@react-three/postprocessing';
 import {
   BlendFunction,
-  ToneMappingMode,
   type VignetteEffect,
   type BloomEffect,
   type NoiseEffect,
@@ -24,11 +22,12 @@ import { worldUniforms as U } from '../core/uniforms';
  * whisper of chromatic fringing at the edges, film grain, and a vignette.
  * Grain and fringing vanish on the paper print, which should look printed, not filmed.
  *
- * Order matters. Where many strands overlap, additive light goes well past
- * white; tone mapping rolls those highlights off smoothly *before* the grain,
- * whose soft-light blend turns over-bright pixels into flickering blue noise.
- * The Khronos "neutral" curve leaves everything below ~0.76 untouched, so the
- * palette itself does not shift.
+ * Blue sparks (intentional): where many strands overlap, additive light goes
+ * well past white, and the grain's soft-light blend flips those over-bright
+ * warm pixels to flickering blue-white, like arcing where the current is
+ * densest. Nothing clamps the highlights before the grain on purpose; adding
+ * tone mapping ahead of <Noise> would remove the sparks. Their strength
+ * follows the grain opacity, and they fade out with the grain on the paper.
  */
 export function Effects({ multisampling }: { multisampling: number }) {
   const vignette = useRef<VignetteEffect>(null);
@@ -43,16 +42,15 @@ export function Effects({ multisampling }: { multisampling: number }) {
     if (vignette.current) vignette.current.darkness = 0.08 + 0.52 * field;
     if (bloom.current) bloom.current.intensity = 1.1 * field; // bright paper must not bloom
     // grain reads as texture on dark green but as TV static on bright paper
-    if (noise.current) noise.current.blendMode.opacity.value = 0.35 * field;
+    if (noise.current) noise.current.blendMode.opacity.value = 0.45 * field;
     if (aberration.current) aberration.current.offset.set(0.0007 * field, 0.0009 * field);
   });
 
   return (
     <EffectComposer multisampling={multisampling} enableNormalPass={false}>
       <Bloom ref={bloom} mipmapBlur intensity={1.1} luminanceThreshold={0.42} luminanceSmoothing={0.35} radius={0.78} />
-      <ToneMapping mode={ToneMappingMode.NEUTRAL} />
       <ChromaticAberration ref={aberration} offset={fringe} radialModulation modulationOffset={0.35} />
-      <Noise ref={noise} premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.35} />
+      <Noise ref={noise} premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.45} />
       <Vignette ref={vignette} offset={0.28} darkness={0.6} />
     </EffectComposer>
   );
