@@ -1,14 +1,14 @@
 import { Component, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { PerformanceMonitor } from '@react-three/drei';
 import { Specimen } from './components/Specimen';
 import { Spores } from './components/Spores';
 import { Atmosphere } from './components/Atmosphere';
 import { Filaments } from './components/Filaments';
 import { Effects } from './components/Effects';
 import { CameraRig } from './components/CameraRig';
+import { Governor } from './components/Governor';
 import { acts } from './core/acts';
-import { detectTier, hasWebGL } from './core/quality';
+import { detectTier, hasWebGL, qualityLadder } from './core/quality';
 import { store, subscribe, setRenderer } from './core/store';
 
 /**
@@ -20,7 +20,9 @@ export default function Experience() {
   const [supported, setSupported] = useState<boolean | null>(null);
   const tier = useMemo(() => detectTier(), []);
   const motion = useSyncExternalStore(subscribe, () => store.motion, () => true);
-  const [dpr, setDpr] = useState(() => Math.min(window.devicePixelRatio || 1, tier.dpr[1]));
+  const ladder = useMemo(() => qualityLadder(tier, window.devicePixelRatio || 1), [tier]);
+  const [rung, setRung] = useState(0);
+  const quality = ladder[rung];
 
   useEffect(() => {
     const ok = hasWebGL();
@@ -34,7 +36,7 @@ export default function Experience() {
     <SceneErrorBoundary onError={() => setRenderer('fallback')}>
       <Canvas
         className="world-canvas"
-        dpr={dpr}
+        dpr={quality.dpr}
         frameloop={motion ? 'always' : 'demand'}
         flat
         gl={{
@@ -52,17 +54,16 @@ export default function Experience() {
           });
         }}
       >
-        <PerformanceMonitor
-          flipflops={3}
-          onDecline={() => setDpr((d) => Math.max(tier.dpr[0], d - 0.25))}
-          onIncline={() => setDpr((d) => Math.min(tier.dpr[1], d + 0.25))}
-          onFallback={() => setDpr(tier.dpr[0])}
+        <Governor
+          canStepDown={rung < ladder.length - 1}
+          onStepDown={() => setRung((r) => Math.min(r + 1, ladder.length - 1))}
         />
         <Atmosphere />
         <Specimen tier={tier} />
-        <Filaments count={tier.filaments} octaves={tier.octaves} />
+        <Filaments count={quality.filaments} octaves={tier.octaves} />
         <Spores count={tier.spores} />
-        {tier.post && <Effects multisampling={tier.antialias ? 4 : 0} />}
+        {/* 2x MSAA looks the same as 4x on these hairlines at half the memory traffic */}
+        {quality.post && <Effects multisampling={tier.antialias ? 2 : 0} />}
         <CameraRig />
         <InputBridge />
       </Canvas>
@@ -93,15 +94,19 @@ function InputBridge() {
     const poke = () => {
       if (!store.motion) invalidate();
     };
+    const scrolled = () => {
+      store.lastScroll = performance.now();
+      poke();
+    };
     window.addEventListener('pointermove', move, { passive: true });
     document.documentElement.addEventListener('pointerleave', leave);
-    window.addEventListener('scroll', poke, { passive: true });
+    window.addEventListener('scroll', scrolled, { passive: true });
     window.addEventListener('resize', poke);
     const unsub = subscribe(poke);
     return () => {
       window.removeEventListener('pointermove', move);
       document.documentElement.removeEventListener('pointerleave', leave);
-      window.removeEventListener('scroll', poke);
+      window.removeEventListener('scroll', scrolled);
       window.removeEventListener('resize', poke);
       unsub();
     };

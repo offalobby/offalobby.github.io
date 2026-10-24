@@ -39,6 +39,8 @@ export const store = {
   act: 0,
   /** pointer in normalized device coordinates */
   pointer: { x: 0, y: 0, lastMove: -Infinity, inside: false },
+  /** performance.now() of the last scroll event; quality changes wait for a pause */
+  lastScroll: -Infinity,
   /** false when the visitor or the OS asks for reduced motion */
   motion: true,
   /** true after the first frame has been drawn */

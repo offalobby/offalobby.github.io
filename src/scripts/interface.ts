@@ -5,6 +5,8 @@
  */
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
 import { store, subscribe, setMotion, onFrame } from '../experience/core/store';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -57,6 +59,50 @@ sections.forEach((section, i) => {
 });
 onActChange();
 
+// ----------------------------------------------------------- smooth scroll --
+// A mouse wheel moves the page in ~100 px jumps, so the text lurched in steps
+// while the 3D world glided. Lenis eases those steps on the same GSAP ticker
+// that drives ScrollTrigger, so text, triggers and camera move together.
+// Touch and keyboard scrolling stay native; with motion off it is removed.
+
+let lenis: Lenis | null = null;
+function syncSmoothScroll() {
+  if (store.motion && !lenis) {
+    lenis = new Lenis({ lerp: 0.12, smoothWheel: true, syncTouch: false });
+    lenis.on('scroll', ScrollTrigger.update);
+  } else if (!store.motion && lenis) {
+    lenis.destroy();
+    lenis = null;
+  }
+}
+gsap.ticker.add((time) => lenis?.raf(time * 1000));
+syncSmoothScroll();
+subscribe(syncSmoothScroll);
+
+const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+/** Every in-page link (gauge, index, scroll cue) goes through here. */
+function goTo(hash: string) {
+  const target = document.getElementById(hash.slice(1));
+  if (!target) return false;
+  if (lenis) lenis.scrollTo(target, { duration: 1.6, easing: easeInOut, force: true });
+  else target.scrollIntoView({ behavior: store.motion ? 'smooth' : 'auto' });
+  history.replaceState(null, '', hash);
+  // move focus to the destination so keyboard users land where they jumped
+  target.setAttribute('tabindex', '-1');
+  target.focus({ preventScroll: true });
+  return true;
+}
+
+document.addEventListener('click', (e) => {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const link = (e.target as Element | null)?.closest?.('a[href^="#"]');
+  const hash = link?.getAttribute('href');
+  if (!hash || hash === '#') return;
+  if (link?.hasAttribute('data-index-link')) closeIndex(false);
+  if (goTo(hash)) e.preventDefault();
+});
+
 // ------------------------------------------------------------ live readout --
 
 const ro = { x: $('#ro-x'), z: $('#ro-z'), ring: $('#ro-ring') };
@@ -65,27 +111,41 @@ const annDot = $<SVGCircleElement>('#ann-dot');
 const annLabel = $('#ann-label');
 const fmt = (v: number) => (v < 0 ? '−' : ' ') + Math.abs(v).toFixed(3);
 
+// Measured once (and on resize), never inside the frame callback: reading
+// layout right after writing styles would force a reflow every frame.
+let labelWidth = annLabel?.offsetWidth ?? 0;
+const measureLabel = () => (labelWidth = annLabel?.offsetWidth ?? 0);
+window.addEventListener('resize', measureLabel);
+document.fonts?.ready.then(measureLabel);
+const last = { x: '', z: '', ring: '', visible: true };
+
 onFrame((r) => {
-  if (ro.x) ro.x.textContent = fmt(r.x);
-  if (ro.z) ro.z.textContent = fmt(r.z);
-  if (ro.ring) ro.ring.textContent = String(Math.max(0, r.ring));
+  // text only changes the DOM when the value does
+  const x = fmt(r.x);
+  const z = fmt(r.z);
+  const ring = String(Math.max(0, r.ring));
+  if (ro.x && x !== last.x) ro.x.textContent = last.x = x;
+  if (ro.z && z !== last.z) ro.z.textContent = last.z = z;
+  if (ro.ring && ring !== last.ring) ro.ring.textContent = last.ring = ring;
 
   if (!annLine || !annDot || !annLabel) return;
-  if (!r.pith) {
-    annotation?.style.setProperty('visibility', 'hidden');
-    return;
+  // the annotation belongs to Act I; past it, it is invisible, so skip the work
+  const show = !!r.pith && store.act < 0.45;
+  if (show !== last.visible) {
+    annotation?.style.setProperty('visibility', show ? 'visible' : 'hidden');
+    last.visible = show;
   }
-  annotation?.style.setProperty('visibility', 'visible');
+  if (!show || !r.pith) return;
   // label sits up and to the right of the pith, clear of the hero text
-  const lx = Math.min(r.pith.x + 120, window.innerWidth - annLabel.offsetWidth - 24);
+  const lx = Math.min(r.pith.x + 120, window.innerWidth - labelWidth - 24);
   const ly = Math.max(r.pith.y - 110, 70);
   annLabel.style.transform = `translate(${lx + 8}px, ${ly - 8}px)`;
-  annDot.setAttribute('cx', String(r.pith.x));
-  annDot.setAttribute('cy', String(r.pith.y));
-  annLine.setAttribute('x1', String(r.pith.x + 3));
-  annLine.setAttribute('y1', String(r.pith.y - 3));
-  annLine.setAttribute('x2', String(lx));
-  annLine.setAttribute('y2', String(ly));
+  annDot.setAttribute('cx', r.pith.x.toFixed(1));
+  annDot.setAttribute('cy', r.pith.y.toFixed(1));
+  annLine.setAttribute('x1', (r.pith.x + 3).toFixed(1));
+  annLine.setAttribute('y1', (r.pith.y - 3).toFixed(1));
+  annLine.setAttribute('x2', lx.toFixed(1));
+  annLine.setAttribute('y2', ly.toFixed(1));
 });
 
 // ------------------------------------------------------------------ motion --
@@ -117,6 +177,7 @@ function openIndex() {
     index.dataset.open = '';
     openBtn?.setAttribute('aria-expanded', 'true');
     main?.setAttribute('inert', '');
+    lenis?.stop(); // the page behind the open index stays put
     index.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
   });
 }
@@ -126,6 +187,7 @@ function closeIndex(restoreFocus = true) {
   delete index.dataset.open;
   openBtn?.setAttribute('aria-expanded', 'false');
   main?.removeAttribute('inert');
+  lenis?.start();
   const done = () => {
     if (!('open' in index.dataset)) index.hidden = true;
   };
@@ -152,17 +214,6 @@ index?.addEventListener('keydown', (e) => {
     }
   }
 });
-$$<HTMLAnchorElement>('[data-index-link]').forEach((a) =>
-  a.addEventListener('click', () => {
-    closeIndex(false);
-    // move focus to the destination so keyboard users land where they jumped
-    const target = document.querySelector<HTMLElement>(a.getAttribute('href') ?? '');
-    if (target) {
-      target.setAttribute('tabindex', '-1');
-      setTimeout(() => target.focus({ preventScroll: true }), 50);
-    }
-  }),
-);
 
 // ------------------------------------------------- loader + opening sequence --
 

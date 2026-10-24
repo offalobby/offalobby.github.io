@@ -53,7 +53,7 @@ void main() {
   float travel = 1.0 + 2.2 * aSeed.x;
   float tail = 0.5 + 1.3 * aSeed.y;
   float s = max(phase * travel - aEnd * tail, 0.0);
-  const int STEPS = 5;
+  const int STEPS = 4;
   float h = s / float(STEPS);
   for (int i = 0; i < STEPS; i++) p += tangentAt(p) * h;
 

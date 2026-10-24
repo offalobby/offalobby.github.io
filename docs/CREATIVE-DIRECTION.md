@@ -123,10 +123,10 @@ Key decisions:
 
 | Situation | Behaviour |
 | --- | --- |
-| Desktop GPU | 340² grid, 9000 filaments, 1400 spores, bloom + lens, DPR up to 2 |
-| Mid / touch devices | 230² grid, 5000 filaments, 800 spores, bloom + lens, DPR ≤ 1.5 |
-| Low (small touch, ≤2 cores, ≤2 GB) | 150² grid, 1800 filaments, 380 spores, DPR ≤ 1.25, 2 noise octaves, no post-processing |
-| Frame rate drops | drei `PerformanceMonitor` steps DPR down (and back up) |
+| Desktop GPU | 340² grid, 9000 filaments, 1400 spores, bloom + lens (2× MSAA), DPR up to 1.5 |
+| Mid / touch devices | 230² grid, 5000 filaments, 800 spores, bloom + lens (2× MSAA), DPR ≤ 1.25 |
+| Low (small touch, ≤2 cores, ≤2 GB) | 150² grid, 1800 filaments, 380 spores, DPR 0.75–1, 2 noise octaves, no post-processing |
+| Frame rate too low | `Governor` steps *down* a quality ladder (resolution in ¼ steps → lens effects off → half the strands), only during a pause in scrolling, never back up |
 | `?quality=low|medium|high` | force a tier, for testing |
 | Reduced motion (OS or toggle) | render on demand only; no time, sway or parallax; camera cuts between acts instead of travelling; intro animations skipped |
 | No WebGL2 / context lost / shader error | static SVG woodcut of the same field; all content unaffected |
@@ -136,6 +136,28 @@ Known costs: each vertex evaluates the field three times (finite-difference
 normals), ~30 value-noise lookups per vertex. That is the main lever if a
 device struggles; tiers already trade it off. The three.js + R3F bundle is
 ~245 KB gzipped and loads in parallel with the HTML.
+
+### Smoothness rules (learned the hard way)
+
+- **Never oscillate resolution.** Each DPR change reallocates every render
+  target and shows as a hitch; an up/down monitor on a borderline GPU produced
+  repeated jolts. Quality only ever steps down, and only while not scrolling.
+- **Keep per-pixel work per-pixel.** Low-frequency noise (the fibre wobble) is
+  computed per vertex; the painted atmosphere is rendered once per frame at
+  half size into a texture shared by the backdrop and the terrain fog.
+- **Branch on uniforms.** Landscape and print shading sit behind `uPrint`
+  branches, so neither is paid for when it is invisible; fully faded strands
+  and spores are not drawn at all.
+- **Tone-map before grain.** Overlapping additive strands exceed 1.0; the
+  grain's soft-light blend turned those pixels into flickering blue noise.
+  A neutral tone-mapping step (identity below ~0.76) now runs first.
+- **Anything tied to the camera updates every frame** (the pith annotation),
+  and nothing reads layout inside the frame callback.
+- **Damp inputs that drive the whole field.** The cursor charge has a speed
+  limit and ignores far grazing hits, since every strand re-routes when it moves.
+- **Wheel scrolling is smoothed** (Lenis, on the GSAP ticker that also drives
+  ScrollTrigger) so text and camera move together; off with reduced motion.
+- **No CSS `filter` on elements that move over the canvas.**
 
 ## Roadmap
 
