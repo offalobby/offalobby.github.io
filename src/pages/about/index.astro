@@ -1,0 +1,109 @@
+---
+import { Image } from 'astro:assets';
+import Section from '../../layouts/Section.astro';
+import Crack from '../../components/section/Crack.astro';
+import { getJournal, url } from '../../lib/content';
+import { formatDate } from '../../lib/dates';
+import { about } from '../../data/about';
+import { site } from '../../data/site';
+
+const entries = await getJournal();
+---
+
+<Section title="About" ground="rikyu" description={`About ${site.name}, and a journal of things outside the lab.`}>
+  <header class="page-head">
+    <p class="label">About</p>
+    <h1>{site.name}</h1>
+    <Crack class="crack-rule" seed="about" />
+    <p class="lede">{about.education.degree}, {about.education.school}. {about.education.expected}.</p>
+  </header>
+
+  <div class="about-grid">
+    <div>
+      {
+        about.bio ? (
+          <p class="bio">{about.bio}</p>
+        ) : (
+          <p class="placeholder-note">
+            <b>Placeholder.</b> A few sentences in your own words go here. Edit <code>bio</code> in src/data/about.ts.
+          </p>
+        )
+      }
+
+      <section aria-labelledby="journal-title">
+        <h2 id="journal-title" class="section-title">Journal</h2>
+        {
+          entries.length === 0 ? (
+            <p class="empty">
+              Nothing posted yet. Copy <code>src/content/journal/_template.md</code> to write the first entry.
+            </p>
+          ) : (
+            <ol class="rows" role="list">
+              {entries.map((e) => (
+                <li>
+                  <a class="row journal-row" href={url(`/about/${e.id}/`)}>
+                    <span class="when">
+                      <time datetime={e.data.date.toISOString().slice(0, 10)}>{formatDate(e.data.date)}</time>
+                    </span>
+                    <span>
+                      <span class="title">{e.data.title}</span>
+                      {e.data.summary && <span class="sum">{e.data.summary}</span>}
+                      {e.data.cover && (
+                        <Image class="journal-thumb" src={e.data.cover} alt={e.data.coverAlt ?? ''} widths={[480, 960]} sizes="(max-width: 600px) 100vw, 30rem" />
+                      )}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          )
+        }
+      </section>
+    </div>
+
+    <aside class="glance" aria-label="At a glance">
+      <dl>
+        <dt>Honors</dt>
+        {about.honors.map((h) => <dd>{h}</dd>)}
+
+        <dt>Leadership</dt>
+        {
+          about.leadership.map((l) => (
+            <dd>
+              {l.role}, {l.org} <span>{l.when}</span>
+            </dd>
+          ))
+        }
+
+        <dt>Service</dt>
+        {about.service.map((s) => <dd>{s}</dd>)}
+
+        <dt>Languages</dt>
+        {
+          about.languages.map((l) => (
+            <dd>
+              {l.name} <span>{l.level}</span>
+            </dd>
+          ))
+        }
+
+        <dt>Affiliations</dt>
+        {about.affiliations.map((a) => <dd>{a}</dd>)}
+
+        <dt>Interests</dt>
+        {about.interests.map((i) => <dd>{i}</dd>)}
+
+        <dt>Elsewhere</dt>
+        {
+          about.links.map((l) => (
+            <dd>
+              <a href={l.href} rel={l.href.startsWith('http') ? 'me noopener' : undefined}>
+                {l.label}
+              </a>
+            </dd>
+          ))
+        }
+      </dl>
+    </aside>
+  </div>
+</Section>

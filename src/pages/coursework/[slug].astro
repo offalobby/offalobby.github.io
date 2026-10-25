@@ -1,0 +1,42 @@
+---
+import { render } from 'astro:content';
+import Section from '../../layouts/Section.astro';
+import EntryPage from '../../components/section/EntryPage.astro';
+import { getSemesters, getProjects, neighbours, hasText, url, type Course } from '../../lib/content';
+
+export async function getStaticPaths() {
+  // previous / next follow the order of the coursework page
+  const all = (await getSemesters()).flatMap((s) => s.courses);
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry, all } }));
+}
+const { entry, all } = Astro.props as { entry: Course; all: Course[] };
+const { Content } = await render(entry);
+const d = entry.data;
+const { prev, next } = neighbours(all, entry.id);
+const link = (e?: Course) => e && { href: url(`/coursework/${e.id}/`), title: e.data.title };
+const projects = (await getProjects()).filter((p) => d.projects.includes(p.id));
+---
+
+<Section title={d.title} ground="uguisu" description={d.summary ?? `${d.title}, ${d.institution}.`} section={{ label: 'Coursework', href: '/coursework/' }}>
+  <EntryPage
+    seed={entry.id}
+    section={{ label: 'Coursework', href: '/coursework/' }}
+    title={d.title}
+    lede={d.summary}
+    facts={[
+      { label: 'Semester', value: d.term && d.year ? `${d.term} ${d.year}` : 'Not yet placed' },
+      { label: 'Course code', value: d.code },
+      { label: 'Area', value: d.area },
+      { label: 'Where', value: d.location ? `${d.institution}, ${d.location}` : d.institution },
+      { label: 'Related projects', links: projects.map((p) => ({ label: p.data.title, href: url(`/projects/${p.id}/`) })) },
+    ]}
+    cover={d.cover}
+    coverAlt={d.coverAlt}
+    prev={link(prev)}
+    next={link(next)}
+    hasBody={hasText(entry.body)}
+    emptyNote="An overview of the course and any work from it goes in its Markdown file."
+  >
+    <Content />
+  </EntryPage>
+</Section>

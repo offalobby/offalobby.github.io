@@ -1,0 +1,22 @@
+---
+/**
+ * A faint gold hairline crack, used sparingly where a rule would go.
+ * It stretches to the width of its container; its shape is fixed by `seed`.
+ */
+import { seam } from '../../lib/crack';
+
+interface Props {
+  seed: string;
+  /** band the line wanders within, in px */
+  span?: number;
+  weight?: number;
+  branches?: number;
+  class?: string;
+}
+const { seed, span = 14, weight = 1.4, branches = 1, class: cls } = Astro.props;
+const s = seam(seed, { span, weight, branches, length: 1000 });
+---
+
+<svg class:list={['crack', cls]} viewBox={s.viewBox} preserveAspectRatio="none" height={span} aria-hidden="true" focusable="false">
+  {s.paths.map((d) => <path d={d} fill="url(#kg)" />)}
+</svg>

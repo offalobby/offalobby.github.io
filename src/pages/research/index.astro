@@ -1,0 +1,41 @@
+---
+import Section from '../../layouts/Section.astro';
+import Crack from '../../components/section/Crack.astro';
+import { getResearch, url } from '../../lib/content';
+import { formatRange } from '../../lib/dates';
+
+const entries = await getResearch();
+---
+
+<Section
+  title="Research"
+  ground="fukamidori"
+  description="Research by Afolabi Durodola: graph learning for genomics, sickle cell biomarkers, and PKU gene therapy."
+>
+  <header class="page-head">
+    <p class="label">{entries.length} research positions</p>
+    <h1>Research</h1>
+    <Crack class="crack-rule" seed="research" />
+    <p class="lede">From gene therapy at the bench to graph learning on genomes. Most recent first.</p>
+  </header>
+
+  <ol class="rows" role="list">
+    {
+      entries.map((r) => (
+        <li>
+          <a class="row" href={url(`/research/${r.id}/`)}>
+            <span class="when">{formatRange(r.data.start, r.data.end)}</span>
+            <span>
+              <span class="title">{r.data.title}</span>
+              <span class="sub">
+                {r.data.lab}, {r.data.institution}
+              </span>
+              <span class="sum">{r.data.summary}</span>
+            </span>
+            <span class="where">{r.data.role}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</Section>

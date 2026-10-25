@@ -1,0 +1,41 @@
+---
+import Section from '../../layouts/Section.astro';
+import Crack from '../../components/section/Crack.astro';
+import { getProjects, url } from '../../lib/content';
+import { formatRange } from '../../lib/dates';
+
+const projects = await getProjects();
+---
+
+<Section
+  title="Projects"
+  ground="tsuchi"
+  description="Engineering projects by Afolabi Durodola: processors, GPU kernels, FPGA designs, PCBs and machine learning."
+>
+  <header class="page-head">
+    <p class="label">{projects.length} projects</p>
+    <h1>Projects</h1>
+    <Crack class="crack-rule" seed="projects" />
+    <p class="lede">Hardware, GPU computing and machine learning, newest first. Each opens into the full write-up.</p>
+  </header>
+
+  <ol class="rows" role="list">
+    {
+      projects.map((p) => (
+        <li>
+          <a class="row" href={url(`/projects/${p.id}/`)}>
+            <span class="when">{formatRange(p.data.start, p.data.end)}</span>
+            <span>
+              <span class="title">
+                {p.data.title}
+                {p.data.status && p.data.status !== 'complete' && <span class="flag">{p.data.status}</span>}
+              </span>
+              <span class="sum">{p.data.summary}</span>
+            </span>
+            <span class="where">{p.data.context}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</Section>

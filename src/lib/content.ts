@@ -1,0 +1,80 @@
+/**
+ * Queries shared by the homepage and the section pages, so ordering and
+ * draft handling are decided in exactly one place.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { recency } from './dates';
+
+export type Project = CollectionEntry<'projects'>;
+export type Research = CollectionEntry<'research'>;
+export type Course = CollectionEntry<'courses'>;
+export type JournalEntry = CollectionEntry<'journal'>;
+
+const published = <T extends { data: { draft: boolean } }>(e: T) => import.meta.env.DEV || !e.data.draft;
+
+export async function getProjects(): Promise<Project[]> {
+  const all = await getCollection('projects', published);
+  return all.sort((a, b) => recency(b.data.start, b.data.end) - recency(a.data.start, a.data.end));
+}
+
+export async function getResearch(): Promise<Research[]> {
+  const all = await getCollection('research', published);
+  return all.sort((a, b) => recency(b.data.start, b.data.end) - recency(a.data.start, a.data.end));
+}
+
+export async function getJournal(): Promise<JournalEntry[]> {
+  const all = await getCollection('journal', published);
+  return all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+}
+
+const TERM_ORDER = { Spring: 0, Summer: 1, Fall: 2 } as const;
+export const AREAS = [
+  'Circuits & devices',
+  'Digital & computing',
+  'Signals & data',
+  'Mathematics',
+  'Beyond engineering',
+] as const;
+
+export interface Semester {
+  id: string;
+  label: string;
+  /** null for courses without a term yet */
+  sort: number | null;
+  courses: Course[];
+}
+
+/** Courses grouped by semester, newest semester first; unplaced courses last. */
+export async function getSemesters(): Promise<Semester[]> {
+  const all = await getCollection('courses', published);
+  const groups = new Map<string, Semester>();
+  for (const c of all) {
+    const { term, year } = c.data;
+    const id = term && year ? `${year}-${term.toLowerCase()}` : 'unplaced';
+    if (!groups.has(id)) {
+      groups.set(id, {
+        id,
+        label: term && year ? `${term} ${year}` : 'Not yet placed in a semester',
+        sort: term && year ? year * 3 + TERM_ORDER[term] : null,
+        courses: [],
+      });
+    }
+    groups.get(id)!.courses.push(c);
+  }
+  const byArea = (a: Course, b: Course) =>
+    AREAS.indexOf(a.data.area) - AREAS.indexOf(b.data.area) || a.data.title.localeCompare(b.data.title);
+  const list = [...groups.values()];
+  list.forEach((s) => s.courses.sort(byArea));
+  return list.sort((a, b) => (b.sort ?? -1) - (a.sort ?? -1));
+}
+
+/** Previous / next in a list, for the footer of a detail page. */
+export function neighbours<T extends { id: string }>(list: T[], id: string) {
+  const i = list.findIndex((e) => e.id === id);
+  return { prev: i > 0 ? list[i - 1] : undefined, next: i >= 0 && i < list.length - 1 ? list[i + 1] : undefined };
+}
+
+export const url = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, '')}${path}`;
+
+/** True when an entry's Markdown has visible text (HTML comments don't count). */
+export const hasText = (body?: string) => !!body?.replace(/<!--[\s\S]*?-->/g, '').trim();

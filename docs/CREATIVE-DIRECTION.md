@@ -161,6 +161,24 @@ device struggles; tiers already trade it off. The three.js + R3F bundle is
   ScrollTrigger) so text and camera move together; off with reduced motion.
 - **No CSS `filter` on elements that move over the canvas.**
 
+## The section pages: quiet grounds
+
+The 3D homepage is the one loud moment. The section pages are where people
+read, so they are Japanese-minimal: a dark, tea-coloured ground, soft
+washi-coloured text, generous space, hairline rules, and a single faint gold
+crack under each title as the only ornament. No cards, no textures, no 3D.
+
+| Section | Ground | Meaning (tea ceremony / kimono colours) |
+| --- | --- | --- |
+| Projects | tsuchi, earthen brown `#3a2d24` | stability, the raw material |
+| Research | fukamidori, deep green `#252b23` | growth, the living world |
+| Coursework | uguisu, olive `#34362a` | harmony, learning in season |
+| About | rikyū, aged-wood taupe `#38342c`, ochre accent | quiet, unpretentious warmth |
+
+Text is `#e6dfce` with `#b9b09d` for secondary lines, so contrast stays
+comfortable rather than stark. The cracks are thin SVG ribbons generated from a
+seed (`src/lib/crack.ts`), so each page always has the same one.
+
 ## Roadmap
 
 **Phase 2 (this branch), complete:** full-screen procedural specimen, contour
@@ -170,7 +188,12 @@ field morphs (rings → waves → print), loader + one opening sequence, depth
 gauge, live readout, pith annotation, index menu, motion toggle, quality tiers,
 SVG fallback, GitHub Pages workflow.
 
-**Phase 3, next:** content collections (`projects`, `research`,
+**Phase 3, built:** content collections for projects, research,
+courses and journal; list and detail pages for each, with stable URLs, no 3D
+required; homepage panels list real entries; the index menu links to pages.
+The section pages use quiet tea-coloured grounds (see above).
+
+**Phase 3, originally planned:** content collections (`projects`, `research`,
 `coursework`) with zod schemas; `/projects/[slug]` and `/research/[slug]`
 detail pages (stable URLs, readable, no 3D required); semester entries rendered
 in Act II; project markers in Act III placed by the field (each project becomes

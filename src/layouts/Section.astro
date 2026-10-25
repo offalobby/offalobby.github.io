@@ -1,0 +1,51 @@
+---
+/**
+ * Section pages (projects, research, coursework, about, and every entry).
+ * No 3D here: these pages are for reading. Plain HTML and CSS on a dark,
+ * tea-coloured ground, with a faint gold crack or two as the only ornament.
+ */
+import Base from './Base.astro';
+import IndexMenu from '../components/IndexMenu.astro';
+import IndexButton from '../components/IndexButton.astro';
+import GoldDefs from '../components/section/GoldDefs.astro';
+import { site } from '../data/site';
+import '../styles/sections.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ground: 'tsuchi' | 'fukamidori' | 'uguisu' | 'rikyu';
+  /** the section this page belongs to, shown beside the wordmark */
+  section?: { label: string; href: string };
+}
+const { title, description, ground, section } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const year = new Date().getFullYear();
+---
+
+<Base title={`${title} — ${site.wordmark}`} description={description} ground={ground}>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="section-page" data-ground={ground}>
+    <GoldDefs />
+    <header class="masthead">
+      <span class="masthead-trail">
+        <a class="wordmark" href={`${base}/`}>{site.wordmark}</a>
+        {section && <a class="trail-section" href={`${base}${section.href}`}>{section.label}</a>}
+      </span>
+      <div class="masthead-tools">
+        <IndexButton />
+      </div>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="page-foot">{site.wordmark}, {year}.</footer>
+  </div>
+  <IndexMenu />
+
+  <script>
+    import '../scripts/page';
+  </script>
+</Base>

@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import { store, subscribe, setMotion, onFrame } from '../experience/core/store';
+import { initIndexMenu } from './indexMenu';
 
 gsap.registerPlugin(ScrollTrigger);
 // Animations follow wall-clock time even if the GPU is busy, so text never
@@ -96,11 +97,13 @@ function goTo(hash: string) {
 
 document.addEventListener('click', (e) => {
   if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  const link = (e.target as Element | null)?.closest?.('a[href^="#"]');
-  const hash = link?.getAttribute('href');
-  if (!hash || hash === '#') return;
-  if (link?.hasAttribute('data-index-link')) closeIndex(false);
-  if (goTo(hash)) e.preventDefault();
+  const link = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
+  if (!link) return;
+  // only links to a section of this very page ("#projects" or "/#projects")
+  const to = new URL(link.href, location.href);
+  if (to.origin !== location.origin || to.pathname !== location.pathname || !to.hash) return;
+  if (link.hasAttribute('data-index-link')) closeIndex(false);
+  if (goTo(to.hash)) e.preventDefault();
 });
 
 // ------------------------------------------------------------ live readout --
@@ -163,57 +166,12 @@ syncMotion();
 
 // ------------------------------------------------------------------- index --
 
-const index = $<HTMLElement>('#index');
-const openBtn = $<HTMLButtonElement>('#index-open');
-const closeBtn = $<HTMLButtonElement>('#index-close');
-const main = $('main');
-let lastFocus: HTMLElement | null = null;
-
-function openIndex() {
-  if (!index) return;
-  lastFocus = document.activeElement as HTMLElement;
-  index.hidden = false;
-  requestAnimationFrame(() => {
-    index.dataset.open = '';
-    openBtn?.setAttribute('aria-expanded', 'true');
-    main?.setAttribute('inert', '');
-    lenis?.stop(); // the page behind the open index stays put
-    index.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
-  });
-}
-
-function closeIndex(restoreFocus = true) {
-  if (!index || !('open' in index.dataset)) return;
-  delete index.dataset.open;
-  openBtn?.setAttribute('aria-expanded', 'false');
-  main?.removeAttribute('inert');
-  lenis?.start();
-  const done = () => {
-    if (!('open' in index.dataset)) index.hidden = true;
-  };
-  if (store.motion) setTimeout(done, 700);
-  else done();
-  if (restoreFocus) lastFocus?.focus({ preventScroll: true });
-}
-
-openBtn?.addEventListener('click', openIndex);
-closeBtn?.addEventListener('click', () => closeIndex());
-index?.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeIndex();
-  if (e.key === 'Tab') {
-    // keep focus inside the open dialog
-    const focusable = $$<HTMLElement>('#index a, #index button');
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault();
-      last.focus();
-    } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault();
-      first.focus();
-    }
-  }
+const menu = initIndexMenu({
+  onOpen: () => lenis?.stop(), // the page behind the open index stays put
+  onClose: () => lenis?.start(),
+  closeDelay: () => (store.motion ? 700 : 0),
 });
+const closeIndex = (restoreFocus = true) => menu.close(restoreFocus);
 
 // ------------------------------------------------- loader + opening sequence --
 

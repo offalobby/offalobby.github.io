@@ -1,0 +1,44 @@
+---
+import Section from '../../layouts/Section.astro';
+import Crack from '../../components/section/Crack.astro';
+import { getSemesters, url } from '../../lib/content';
+
+const semesters = await getSemesters();
+const total = semesters.reduce((n, s) => n + s.courses.length, 0);
+---
+
+<Section
+  title="Coursework"
+  ground="uguisu"
+  description="Coursework of Afolabi Durodola, electrical and computer engineering at Rice University, semester by semester."
+>
+  <header class="page-head">
+    <p class="label">{total} courses</p>
+    <h1>Coursework</h1>
+    <Crack class="crack-rule" seed="coursework" />
+    <p class="lede">Electrical and Computer Engineering at Rice University, semester by semester.</p>
+  </header>
+
+  {
+    semesters.map((s) => (
+      <section class:list={['semester', { 'is-unplaced': s.sort === null }]} aria-labelledby={`sem-${s.id}`}>
+        <div class="semester-head">
+          <h2 id={`sem-${s.id}`}>{s.sort === null ? 'Semester not set yet' : s.label}</h2>
+          <span class="count">
+            {s.courses.length} {s.courses.length === 1 ? 'course' : 'courses'}
+          </span>
+        </div>
+        <ul class="courses" role="list">
+          {s.courses.map((c) => (
+            <li>
+              <a class="course" href={url(`/coursework/${c.id}/`)}>
+                <span class="title">{c.data.title}</span>
+                <span class="area">{c.data.code ?? c.data.area}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</Section>

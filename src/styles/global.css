@@ -504,6 +504,44 @@ main {
   color: var(--accent);
 }
 
+.act-entries {
+  list-style: none;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+.act-entries a {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 0 0.8rem;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+  transition: padding 0.35s var(--ease-out);
+}
+.act-entries .t {
+  font: 400 1.18rem / 1.25 var(--serif);
+  color: var(--text);
+}
+.act-entries .m,
+.act-more .m {
+  font: 400 0.74rem / 1.4 var(--mono);
+  color: var(--text-soft);
+}
+/* a thread of gold appears under the piece you point at */
+.act-entries a:hover,
+.act-entries a:focus-visible {
+  padding-left: 0.6rem;
+  border-bottom-color: #c9a24a;
+}
+:root[data-motion='off'] .act-entries a {
+  transition: none;
+}
+.act-more {
+  display: inline-block;
+  margin-top: 1.2rem;
+  font: 500 0.86rem / 1.4 var(--sans);
+  text-decoration-color: #c9a24a;
+}
 .subsections {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));

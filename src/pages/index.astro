@@ -1,8 +1,36 @@
 ---
 import Base from '../layouts/Base.astro';
 import RingsFallback from '../components/RingsFallback.astro';
+import IndexMenu from '../components/IndexMenu.astro';
+import IndexButton from '../components/IndexButton.astro';
 import Experience from '../experience/Experience';
-import { site, intro, acts, nav } from '../data/site';
+import { site, intro, acts } from '../data/site';
+import { getProjects, getResearch, getSemesters, url } from '../lib/content';
+import { formatRange } from '../lib/dates';
+
+// what each section panel lists: a short, current selection
+const projects = await getProjects();
+const featured = projects.filter((p) => p.data.featured);
+const semesters = await getSemesters();
+const courses = semesters.flatMap((s) => s.courses);
+const lists = {
+  projects: (featured.length ? featured : projects).slice(0, 4).map((p) => ({
+    href: url(`/projects/${p.id}/`),
+    title: p.data.title,
+    meta: formatRange(p.data.start, p.data.end),
+  })),
+  research: (await getResearch()).slice(0, 4).map((r) => ({
+    href: url(`/research/${r.id}/`),
+    title: r.data.title,
+    meta: `${r.data.lab}, ${formatRange(r.data.start, r.data.end)}`,
+  })),
+  courses: courses.slice(0, 5).map((c) => ({
+    href: url(`/coursework/${c.id}/`),
+    title: c.data.title,
+    meta: c.data.term && c.data.year ? `${c.data.term} ${c.data.year}` : c.data.area,
+  })),
+};
+const totals = { projects: projects.length, research: lists.research.length, courses: courses.length };
 
 const stations = [
   { href: '#top', numeral: 'I', name: 'Introduction' },
@@ -46,14 +74,7 @@ const year = new Date().getFullYear();
     <a class="wordmark" href="#top">{site.wordmark}</a>
     <div class="masthead-tools">
       <button class="tool" id="motion-toggle" type="button" aria-pressed="true">Motion on</button>
-      <button class="tool tool-index" id="index-open" type="button" aria-expanded="false" aria-controls="index">
-        <svg class="glyph" viewBox="0 0 20 20" aria-hidden="true">
-          <circle cx="10" cy="10" r="2.5" fill="none" stroke="currentColor" stroke-width="1"></circle>
-          <circle cx="10" cy="10" r="5.5" fill="none" stroke="currentColor" stroke-width="1"></circle>
-          <circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1"></circle>
-        </svg>
-        Index
-      </button>
+      <IndexButton />
     </div>
   </header>
 
@@ -100,6 +121,24 @@ const year = new Date().getFullYear();
             <p class="plate">{act.plate}</p>
             <h2 id={`${act.id}-title`}>{act.heading}</h2>
             {act.body.map((p) => <p>{p}</p>)}
+            {act.entries && (
+              <ol class="act-entries" role="list">
+                {lists[act.entries].map((e) => (
+                  <li>
+                    <a href={e.href}>
+                      <span class="t">{e.title}</span>
+                      <span class="m">{e.meta}</span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            )}
+            {act.more && (
+              <a class="act-more" href={url(act.more.href)}>
+                {act.more.label}
+                {act.entries && <span class="m"> ({totals[act.entries]})</span>}
+              </a>
+            )}
             {act.placeholder && (
               <p class="placeholder">
                 <b>Placeholder.</b> {act.placeholder}
@@ -144,27 +183,7 @@ const year = new Date().getFullYear();
     <span>Set in Newsreader, Hanken Grotesk and IBM Plex Mono.</span>
   </footer>
 
-  <div class="index" id="index" role="dialog" aria-modal="true" aria-labelledby="index-title" hidden>
-    <div class="index-head">
-      <span class="wordmark" id="index-title">Index</span>
-      <button class="tool" id="index-close" type="button">Close</button>
-    </div>
-    <nav aria-label="Site">
-      <ol>
-        {
-          nav.map((item) => (
-            <li>
-              <a href={item.href} data-index-link>
-                <span class="label">{item.label}</span>
-                <span class="hint">{item.hint}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ol>
-    </nav>
-    <p class="index-foot">Press Escape to close.</p>
-  </div>
+  <IndexMenu />
 
   <script>
     import '../scripts/interface';
