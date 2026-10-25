@@ -1,0 +1,118 @@
+---
+import { Image } from 'astro:assets';
+import Vessel from '../../layouts/Vessel.astro';
+import Seam from '../../components/kintsugi/Seam.astro';
+import { getJournal, url } from '../../lib/content';
+import { formatDate } from '../../lib/dates';
+import { shardClip } from '../../lib/kintsugi';
+import { about } from '../../data/about';
+import { site } from '../../data/site';
+
+const entries = await getJournal();
+---
+
+<Vessel title="About" glaze="shino" description={`About ${site.name}, and a journal of things outside the lab.`}>
+  <header class="page-head">
+    <p class="crumb">About</p>
+    <h1>{site.name}</h1>
+    <p class="lede">
+      {about.education.degree}, {about.education.school}. {about.education.expected}.
+    </p>
+  </header>
+
+  <div class="about-grid">
+    <div>
+      {
+        about.bio ? (
+          <p class="bio">{about.bio}</p>
+        ) : (
+          <p class="placeholder-note">
+            <b>Placeholder.</b> A few sentences in your own words go here: who you are, what draws you to
+            engineering. Edit <code>bio</code> in src/data/about.ts.
+          </p>
+        )
+      }
+
+      <section aria-labelledby="journal-title">
+        <h2 id="journal-title" class="section-title">Journal</h2>
+        {
+          entries.length === 0 ? (
+            <p class="empty">
+              Nothing posted yet. Entries appear here newest first: copy <code>src/content/journal/_template.md</code>{' '}
+              to start one.
+            </p>
+          ) : (
+            <ol class="journal-list" role="list">
+              {entries.map((e, i) => (
+                <li>
+                  {i > 0 && <Seam seed={`${e.id}:sep`} span={18} weight={2} branches={1} />}
+                  <article class="journal-item">
+                    <time datetime={e.data.date.toISOString().slice(0, 10)}>{formatDate(e.data.date)}</time>
+                    <h3>
+                      <a href={url(`/about/${e.id}/`)}>{e.data.title}</a>
+                    </h3>
+                    {e.data.summary && <p>{e.data.summary}</p>}
+                    {e.data.cover && (
+                      <Image class="thumb" src={e.data.cover} alt={e.data.coverAlt ?? ''} widths={[480, 960]} sizes="(max-width: 600px) 100vw, 34rem" />
+                    )}
+                  </article>
+                </li>
+              ))}
+            </ol>
+          )
+        }
+      </section>
+    </div>
+
+    <aside class="glance glazed" aria-label="At a glance" style={`--clip:${shardClip('glance', 14, { across: 2, down: 4 })};--tone:0.6`}>
+      <h2>At a glance</h2>
+
+      <h3>Honors</h3>
+      <ul>{about.honors.map((h) => <li>{h}</li>)}</ul>
+
+      <h3>Leadership</h3>
+      <ul>
+        {
+          about.leadership.map((l) => (
+            <li>
+              {l.role}, {l.org} <span class="soft">{l.when}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h3>Service</h3>
+      <ul>{about.service.map((s) => <li>{s}</li>)}</ul>
+
+      <h3>Languages</h3>
+      <ul>
+        {
+          about.languages.map((l) => (
+            <li>
+              {l.name} <span class="soft">{l.level}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h3>Affiliations</h3>
+      <ul>{about.affiliations.map((a) => <li>{a}</li>)}</ul>
+
+      <h3>Interests</h3>
+      <ul>{about.interests.map((i) => <li>{i}</li>)}</ul>
+
+      <h3>Elsewhere</h3>
+      <ul>
+        {
+          about.links.map((l) => (
+            <li>
+              <a href={l.href} rel={l.href.startsWith('http') ? 'me noopener' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </aside>
+  </div>
+</Vessel>

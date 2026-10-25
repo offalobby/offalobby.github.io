@@ -1,6 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
+import { satteri } from '@astrojs/markdown-satteri';
+import { figures } from './src/lib/figures.mjs';
 
 // offalobby.github.io is a GitHub *user* site served from the domain root,
 // and public/CNAME points it at offalobby.com, so `base` stays '/'.
@@ -17,6 +19,10 @@ export default defineConfig({
     format: 'directory',
   },
   integrations: [react()],
+  markdown: {
+    // captions for images: ![alt](./img.png "Caption")
+    processor: satteri({ hastPlugins: [figures] }),
+  },
   vite: {
     build: {
       // three.js is one large chunk by nature; don't nag about it

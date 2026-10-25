@@ -1,0 +1,41 @@
+---
+import { render } from 'astro:content';
+import Vessel from '../../layouts/Vessel.astro';
+import EntryPage from '../../components/kintsugi/EntryPage.astro';
+import { getProjects, neighbours, hasText, url, type Project } from '../../lib/content';
+import { formatRange } from '../../lib/dates';
+
+export async function getStaticPaths() {
+  const all = await getProjects();
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry, all } }));
+}
+const { entry, all } = Astro.props as { entry: Project; all: Project[] };
+const { Content } = await render(entry);
+const d = entry.data;
+const { prev, next } = neighbours(all, entry.id);
+const link = (e?: Project) => e && { href: url(`/projects/${e.id}/`), title: e.data.title };
+---
+
+<Vessel title={d.title} glaze="slate" description={d.summary} section={{ label: 'Projects', href: '/projects/' }}>
+  <EntryPage
+    seed={entry.id}
+    section={{ label: 'Projects', href: '/projects/' }}
+    title={d.title}
+    lede={d.summary}
+    facts={[
+      { label: 'When', value: formatRange(d.start, d.end) },
+      { label: 'Where', value: d.context },
+      { label: 'Status', value: d.status && d.status !== 'complete' ? d.status[0].toUpperCase() + d.status.slice(1) : undefined },
+      { label: 'Tools', list: d.tools },
+      { label: 'Links', links: d.links },
+    ]}
+    cover={d.cover}
+    coverAlt={d.coverAlt}
+    prev={link(prev)}
+    next={link(next)}
+    hasBody={hasText(entry.body)}
+    emptyNote="The write-up for this project goes in its Markdown file."
+  >
+    <Content />
+  </EntryPage>
+</Vessel>

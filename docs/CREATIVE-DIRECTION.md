@@ -161,6 +161,27 @@ device struggles; tiers already trade it off. The three.js + R3F bundle is
   ScrollTrigger) so text and camera move together; off with reduced motion.
 - **No CSS `filter` on elements that move over the canvas.**
 
+## The section pages: kintsugi
+
+The 3D homepage is the specimen; the section pages are the pieces in the
+collection. Each page is a studio backdrop with glazed pieces resting on it,
+and every piece is a shard: an irregular `clip-path` laid over gold, so the
+gaps between neighbouring shards read as repaired breaks that widen and
+narrow. Long repairs (the research timeline, the break under every entry's
+title) are filled SVG ribbons whose width varies along their length, like
+lacquer that pooled. All geometry comes from a seed (the entry's slug), so a
+piece always has the same cracks and no two are alike (`src/lib/kintsugi.ts`).
+
+| Section | Glaze (from the reference bowls) | Layout |
+| --- | --- | --- |
+| Projects | slate-blue matte stoneware | a stack of wide shards |
+| Research | indigo tenmoku with hare's-fur streaks, on a dark table | one long repair running down through every entry |
+| Coursework | celadon, with tea-coloured shards per area (hojicha, matcha, slate, ash, kuro) | semesters as rows of mosaic tiles |
+| About | shino ash, cream to charcoal, on linen | journal feed beside an "at a glance" shard |
+
+The gold is the one constant. Textures (speckle, mottling, streaks) are tiny
+inline SVG noise filters, so the pages ship no images of their own.
+
 ## Roadmap
 
 **Phase 2 (this branch), complete:** full-screen procedural specimen, contour
@@ -170,7 +191,12 @@ field morphs (rings → waves → print), loader + one opening sequence, depth
 gauge, live readout, pith annotation, index menu, motion toggle, quality tiers,
 SVG fallback, GitHub Pages workflow.
 
-**Phase 3, next:** content collections (`projects`, `research`,
+**Phase 3, built (kintsugi):** content collections for projects, research,
+courses and journal; list and detail pages for each, with stable URLs, no 3D
+required; homepage panels list real entries; the index menu links to pages.
+The section pages are dressed as kintsugi (see below).
+
+**Phase 3, originally planned:** content collections (`projects`, `research`,
 `coursework`) with zod schemas; `/projects/[slug]` and `/research/[slug]`
 detail pages (stable URLs, readable, no 3D required); semester entries rendered
 in Act II; project markers in Act III placed by the field (each project becomes

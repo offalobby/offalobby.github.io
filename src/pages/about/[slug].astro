@@ -1,0 +1,38 @@
+---
+import { render } from 'astro:content';
+import Vessel from '../../layouts/Vessel.astro';
+import EntryPage from '../../components/kintsugi/EntryPage.astro';
+import { getJournal, neighbours, hasText, url, type JournalEntry } from '../../lib/content';
+import { formatDate } from '../../lib/dates';
+
+export async function getStaticPaths() {
+  const all = await getJournal();
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry, all } }));
+}
+const { entry, all } = Astro.props as { entry: JournalEntry; all: JournalEntry[] };
+const { Content } = await render(entry);
+const d = entry.data;
+// the journal reads newest first, so "next" is the older entry
+const { prev, next } = neighbours(all, entry.id);
+const link = (e?: JournalEntry) => e && { href: url(`/about/${e.id}/`), title: e.data.title };
+---
+
+<Vessel title={d.title} glaze="shino" description={d.summary} section={{ label: 'About', href: '/about/' }}>
+  <EntryPage
+    seed={entry.id}
+    section={{ label: 'Journal', href: '/about/' }}
+    title={d.title}
+    lede={d.summary}
+    facts={[
+      { label: 'Posted', value: formatDate(d.date) },
+      { label: 'Tags', list: d.tags },
+    ]}
+    cover={d.cover}
+    coverAlt={d.coverAlt}
+    prev={link(prev)}
+    next={link(next)}
+    hasBody={hasText(entry.body)}
+  >
+    <Content />
+  </EntryPage>
+</Vessel>

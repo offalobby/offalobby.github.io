@@ -1,0 +1,43 @@
+---
+import { render } from 'astro:content';
+import Vessel from '../../layouts/Vessel.astro';
+import EntryPage from '../../components/kintsugi/EntryPage.astro';
+import { getResearch, neighbours, hasText, url, type Research } from '../../lib/content';
+import { formatRange } from '../../lib/dates';
+
+export async function getStaticPaths() {
+  const all = await getResearch();
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry, all } }));
+}
+const { entry, all } = Astro.props as { entry: Research; all: Research[] };
+const { Content } = await render(entry);
+const d = entry.data;
+const { prev, next } = neighbours(all, entry.id);
+const link = (e?: Research) => e && { href: url(`/research/${e.id}/`), title: e.data.title };
+---
+
+<Vessel title={d.title} glaze="tenmoku" description={d.summary} section={{ label: 'Research', href: '/research/' }}>
+  <EntryPage
+    seed={entry.id}
+    section={{ label: 'Research', href: '/research/' }}
+    title={d.title}
+    lede={d.summary}
+    facts={[
+      { label: 'When', value: formatRange(d.start, d.end) },
+      { label: 'Role', value: d.role },
+      { label: 'Lab', value: d.group ? `${d.lab}, ${d.group}` : d.lab },
+      { label: 'Institution', value: d.institution },
+      { label: 'Topics', list: d.topics },
+      { label: 'Methods', list: d.methods },
+      { label: 'Links', links: d.links },
+    ]}
+    cover={d.cover}
+    coverAlt={d.coverAlt}
+    prev={link(prev)}
+    next={link(next)}
+    hasBody={hasText(entry.body)}
+    emptyNote="The question, methods and results go in this entry's Markdown file."
+  >
+    <Content />
+  </EntryPage>
+</Vessel>

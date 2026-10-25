@@ -41,6 +41,10 @@ export interface ActContent {
   body: string[];
   placeholder?: string;
   links?: Link[];
+  /** list entries from this collection on the homepage */
+  entries?: 'courses' | 'projects' | 'research';
+  /** link to the full section page */
+  more?: Link;
   /** extra anchors inside this act (e.g. resume, contact inside the archive) */
   subsections?: { id: string; heading: string; body: string[]; placeholder?: string; links?: Link[] }[];
 }
@@ -52,28 +56,30 @@ export const acts: ActContent[] = [
     plate: 'Plate II. Section through the strata',
     heading: 'Coursework, laid down semester by semester',
     body: [
-      'Seen from the side, each terrace of this formation is a layer of time. In the finished archive every layer stands for one semester: the courses taken, the ideas that stuck, and the projects they led to.',
+      'Seen from the side, each terrace of this formation is a layer of time. Each layer stands for one semester: the courses taken, the ideas that stuck, and the projects they led to.',
     ],
-    placeholder: 'Semester entries are not written yet. They will live in src/content/coursework/ (Phase 3).',
+    entries: 'courses',
+    more: { label: 'All coursework', href: '/coursework/' },
   },
   {
     id: 'projects',
     plate: 'Plate III. Interference of three point sources',
     heading: 'Projects, written up as investigations',
     body: [
-      'Each project gets a full case study: the problem, the design decisions, schematics, measurements, code, and what I would change next.',
       'The surface here is the sum of three circular waves, the same superposition that steers a phased antenna array.',
     ],
-    placeholder: 'No projects are published yet. Each one will be a Markdown file in src/content/projects/ (Phase 3).',
+    entries: 'projects',
+    more: { label: 'All projects', href: '/projects/' },
   },
   {
     id: 'research',
     plate: 'Plate IV. The field, wide view',
     heading: 'Research questions, kept open',
     body: [
-      'Research entries will document a question from the start: background, method, setup, the mathematics, figures, results and any papers or posters, with data and code linked.',
+      'From gene therapy at the bench to graph learning on genomes.',
     ],
-    placeholder: 'No research entries yet. They will live in src/content/research/ (Phase 3).',
+    entries: 'research',
+    more: { label: 'All research', href: '/research/' },
   },
   {
     id: 'about',
@@ -82,7 +88,7 @@ export const acts: ActContent[] = [
     body: [
       'Every ring in this print is a layer of work. The outermost one is always the current semester.',
     ],
-    placeholder: 'About text goes here: who you are, what draws you to electrical engineering, what you are looking for.',
+    more: { label: 'About me, and a journal', href: '/about/' },
     subsections: [
       {
         id: 'resume',
@@ -96,6 +102,7 @@ export const acts: ActContent[] = [
         body: ['Code, notes and work in progress are on GitHub.'],
         links: [
           { label: 'GitHub', href: 'https://github.com/offalobby' },
+          { label: 'LinkedIn', href: 'https://www.linkedin.com/in/hirokidurodola' },
           { label: 'Email', href: 'mailto:ad207@rice.edu' },
         ],
       },
@@ -103,13 +110,13 @@ export const acts: ActContent[] = [
   },
 ];
 
-/** The index (menu). `href` is an in-page anchor until Phase 3 adds pages. */
+/** The index (menu). Paths are site-relative; "/#x" scrolls to a homepage section. */
 export const nav: { label: string; href: string; hint: string }[] = [
-  { label: 'Home', href: '#top', hint: 'The specimen' },
-  { label: 'Projects', href: '#projects', hint: 'Case studies, schematics, code' },
-  { label: 'Research', href: '#research', hint: 'Questions, methods, results' },
-  { label: 'Coursework', href: '#coursework', hint: 'Semester by semester' },
-  { label: 'About', href: '#about', hint: 'Background and interests' },
-  { label: 'Resume', href: '#resume', hint: 'One page, PDF' },
-  { label: 'Contact', href: '#contact', hint: 'GitHub and email' },
+  { label: 'Home', href: '/', hint: 'The specimen' },
+  { label: 'Projects', href: '/projects/', hint: 'Case studies, schematics, code' },
+  { label: 'Research', href: '/research/', hint: 'Questions, methods, results' },
+  { label: 'Coursework', href: '/coursework/', hint: 'Semester by semester' },
+  { label: 'About', href: '/about/', hint: 'Background, interests, journal' },
+  { label: 'Resume', href: '/#resume', hint: 'One page, PDF' },
+  { label: 'Contact', href: '/#contact', hint: 'GitHub, LinkedIn and email' },
 ];

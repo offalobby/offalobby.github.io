@@ -1,0 +1,53 @@
+---
+import Vessel from '../../layouts/Vessel.astro';
+import Crack from '../../components/kintsugi/Crack.astro';
+import { getProjects, url } from '../../lib/content';
+import { formatRange } from '../../lib/dates';
+import { shardClip, tone } from '../../lib/kintsugi';
+
+const projects = await getProjects();
+---
+
+<Vessel
+  title="Projects"
+  glaze="slate"
+  description="Engineering projects by Afolabi Durodola: processors, GPU kernels, FPGA designs, PCBs and machine learning."
+>
+  <header class="page-head">
+    <p class="crumb">Projects <span class="count">({projects.length})</span></p>
+    <h1>Projects, written up as investigations</h1>
+    <p class="lede">
+      Hardware, GPU computing and machine learning, newest first. Each one opens into the full write-up.
+    </p>
+  </header>
+
+  <ol class="mosaic project-list" role="list">
+    {
+      projects.map((p) => (
+        <li class="shard glazed project" style={`--clip:${shardClip(p.id, 16, { across: 5, down: 1 })};--tone:${tone(p.id)}`}>
+          <Crack seed={p.id} />
+          <p class="when shard-body">{formatRange(p.data.start, p.data.end)}</p>
+          <div class="shard-body">
+            <h2>
+              <a class="shard-link" href={url(`/projects/${p.id}/`)}>
+                {p.data.title}
+              </a>
+              {p.data.status && p.data.status !== 'complete' && <span class="status">{p.data.status}</span>}
+            </h2>
+            <p>{p.data.summary}</p>
+          </div>
+          <div class="shard-body">
+            <p class="where">{p.data.context}</p>
+            {p.data.tools.length > 0 && (
+              <ul class="tags" aria-label="Tools">
+                {p.data.tools.map((t) => (
+                  <li>{t}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</Vessel>

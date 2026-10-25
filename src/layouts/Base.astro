@@ -8,21 +8,23 @@ import hankenUrl from '../assets/fonts/hanken-grotesk-var.woff2?url';
 interface Props {
   title?: string;
   description?: string;
+  /** section pages: which glaze the page is dressed in */
+  glaze?: 'celadon' | 'slate' | 'tenmoku' | 'shino';
 }
-const { title = site.title, description = site.description } = Astro.props;
+const { title = site.title, description = site.description, glaze } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en" data-motion="on" data-theme="field">
+<html lang="en" data-motion="on" data-theme="field" data-glaze={glaze}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#161812" />
+    <meta name="theme-color" content={glaze === 'tenmoku' ? '#241f1b' : glaze ? '#e6e0d4' : '#161812'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />

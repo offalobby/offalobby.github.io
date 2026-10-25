@@ -1,0 +1,83 @@
+---
+import Vessel from '../../layouts/Vessel.astro';
+import Crack from '../../components/kintsugi/Crack.astro';
+import { getSemesters, AREAS, url } from '../../lib/content';
+import { shardClip, tone } from '../../lib/kintsugi';
+
+const semesters = await getSemesters();
+const total = semesters.reduce((n, s) => n + s.courses.length, 0);
+const areasUsed = AREAS.filter((a) => semesters.some((s) => s.courses.some((c) => c.data.area === a)));
+---
+
+<Vessel
+  title="Coursework"
+  glaze="celadon"
+  description="Coursework of Afolabi Durodola, electrical and computer engineering at Rice University, semester by semester."
+>
+  <header class="page-head">
+    <p class="crumb">Coursework <span class="count">({total} courses)</span></p>
+    <h1>Coursework, semester by semester</h1>
+    <p class="lede">
+      Electrical and Computer Engineering at Rice University. Open any course for an overview and the work that
+      came out of it.
+    </p>
+  </header>
+
+  <ul class="legend" aria-label="Course areas">
+    {
+      areasUsed.map((a) => (
+        <li data-area={a}>
+          <i aria-hidden="true" />
+          {a}
+        </li>
+      ))
+    }
+  </ul>
+
+  {
+    semesters.map((s) => (
+      <section class:list={['semester', { 'is-unplaced': s.sort === null }]} aria-labelledby={`sem-${s.id}`}>
+        <div class="semester-head">
+          <h2 id={`sem-${s.id}`}>{s.label}</h2>
+          <span class="count">
+            {s.courses.length} {s.courses.length === 1 ? 'course' : 'courses'}
+          </span>
+        </div>
+        <ul class="mosaic course-grid" role="list">
+          {s.courses.map((c) => (
+            <li
+              class="shard glazed course"
+              data-area={c.data.area}
+              style={`--clip:${shardClip(c.id, 12, { across: 2, down: 1 })};--tone:${tone(c.id)};--pool-x:${Math.round(tone(c.id) * 100)}%`}
+            >
+              <Crack seed={c.id} />
+              <div class="shard-body">
+                <h3>
+                  <a class="shard-link" href={url(`/coursework/${c.id}/`)}>
+                    {c.data.title}
+                  </a>
+                </h3>
+                {c.data.summary && <p class="note">{c.data.summary}</p>}
+              </div>
+              <p class="meta shard-body">
+                {c.data.code && (
+                  <>
+                    {c.data.code}
+                    <br />
+                  </>
+                )}
+                {c.data.area}
+                {c.data.institution !== 'Rice University' && (
+                  <>
+                    <br />
+                    {c.data.institution}
+                  </>
+                )}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</Vessel>

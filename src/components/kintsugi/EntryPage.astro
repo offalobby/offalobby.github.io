@@ -1,0 +1,126 @@
+---
+/**
+ * One template for every detail page: a glazed slab with the title and the
+ * facts, a gold seam where it was broken off, then the write-up on the
+ * backdrop, set for reading. Previous / next pieces close the page.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Seam from './Seam.astro';
+import Crack from './Crack.astro';
+import { shardClip, tone } from '../../lib/kintsugi';
+
+export interface Fact {
+  label: string;
+  value?: string;
+  list?: string[];
+  links?: { label: string; href: string }[];
+}
+interface Neighbour {
+  href: string;
+  title: string;
+}
+interface Props {
+  seed: string;
+  section: { label: string; href: string };
+  title: string;
+  lede?: string;
+  facts: Fact[];
+  cover?: ImageMetadata;
+  coverAlt?: string;
+  prev?: Neighbour;
+  next?: Neighbour;
+  /** shown when the body has no text yet */
+  emptyNote?: string;
+  hasBody: boolean;
+}
+const { seed, section, title, lede, facts, cover, coverAlt, prev, next, emptyNote, hasBody } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<article class="entry">
+  <header class="entry-head glazed shard" style={`--clip:${shardClip(seed, 18, { across: 5, down: 2 })};--tone:${tone(seed)}`}>
+    <Crack seed={`${seed}:head`} />
+    <div class="shard-body">
+      <h1>{title}</h1>
+      {lede && <p class="lede">{lede}</p>}
+      <dl class="facts">
+        {
+          facts
+            .filter((f) => f.value || f.list?.length || f.links?.length)
+            .map((f) => (
+              <div>
+                <dt>{f.label}</dt>
+                <dd>
+                  {f.value}
+                  {f.list && f.list.length > 0 && (
+                    <ul class="tags">
+                      {f.list.map((x) => (
+                        <li>{x}</li>
+                      ))}
+                    </ul>
+                  )}
+                  {f.links?.map((l, i) => (
+                    <>
+                      {i > 0 && <br />}
+                      <a href={l.href} rel={l.href.startsWith('http') ? 'noopener' : undefined}>
+                        {l.label}
+                      </a>
+                    </>
+                  ))}
+                </dd>
+              </div>
+            ))
+        }
+      </dl>
+    </div>
+  </header>
+  <div class="entry-seam">
+    <Seam seed={`${seed}:break`} span={30} weight={4} branches={3} />
+  </div>
+
+  {
+    cover && (
+      <figure class="entry-cover">
+        <Image src={cover} alt={coverAlt ?? ''} widths={[640, 1024, 1600]} sizes="(max-width: 1100px) 100vw, 62rem" loading="eager" />
+      </figure>
+    )
+  }
+
+  <div class="prose">
+    <slot />
+    {
+      !hasBody && emptyNote && (
+        <p class="placeholder-note">
+          <b>Placeholder.</b> {emptyNote}
+        </p>
+      )
+    }
+  </div>
+
+  {
+    (prev || next) && (
+      <nav class="entry-nav" aria-label={`More ${section.label.toLowerCase()}`}>
+        <div class="mosaic">
+          {prev && (
+            <div class="shard glazed prev" style={`--clip:${shardClip(`${seed}:prev`, 10, { across: 2 })};--tone:0.3`}>
+              <a class="shard-link shard-body" href={prev.href}>
+                <span>Previous</span>
+                <strong>{prev.title}</strong>
+              </a>
+            </div>
+          )}
+          {next && (
+            <div class="shard glazed next" style={`--clip:${shardClip(`${seed}:next`, 10, { across: 2 })};--tone:0.7`}>
+              <a class="shard-link shard-body" href={next.href}>
+                <span>Next</span>
+                <strong>{next.title}</strong>
+              </a>
+            </div>
+          )}
+        </div>
+      </nav>
+    )
+  }
+  <a class="back" href={`${base}${section.href}`}>All {section.label.toLowerCase()}</a>
+</article>
