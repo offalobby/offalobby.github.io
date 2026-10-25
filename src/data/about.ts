@@ -5,7 +5,10 @@
  */
 export const about = {
   /** PLACEHOLDER — a few sentences in your own voice. */
-  bio: '',
+  bio: "Hellooo! My name is Afolabi. Please call me Afo - it's what my friends call me. \
+   I'm currently an undergrad at Rice University, but you probably already knew that from the rest of the site haha. \
+   I'm not one to bore others with the story of my life, but if you're interested in learning a little bit more about me \
+   feel free to read some of my journal entries. Its not anything professional so please lower your expectations lol-- just some of my likes, dislikes... and maybe some random thoughts/commentaries.",
   education: {
     school: 'Rice University',
     degree: 'B.S. Electrical and Computer Engineering',
