@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
-import Vessel from '../../layouts/Vessel.astro';
-import EntryPage from '../../components/kintsugi/EntryPage.astro';
+import Section from '../../layouts/Section.astro';
+import EntryPage from '../../components/section/EntryPage.astro';
 import { getSemesters, getProjects, neighbours, hasText, url, type Course } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -17,7 +17,7 @@ const link = (e?: Course) => e && { href: url(`/coursework/${e.id}/`), title: e.
 const projects = (await getProjects()).filter((p) => d.projects.includes(p.id));
 ---
 
-<Vessel title={d.title} glaze="celadon" description={d.summary ?? `${d.title}, ${d.institution}.`} section={{ label: 'Coursework', href: '/coursework/' }}>
+<Section title={d.title} ground="uguisu" description={d.summary ?? `${d.title}, ${d.institution}.`} section={{ label: 'Coursework', href: '/coursework/' }}>
   <EntryPage
     seed={entry.id}
     section={{ label: 'Coursework', href: '/coursework/' }}
@@ -39,4 +39,4 @@ const projects = (await getProjects()).filter((p) => d.projects.includes(p.id));
   >
     <Content />
   </EntryPage>
-</Vessel>
+</Section>

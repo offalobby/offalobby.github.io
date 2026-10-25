@@ -28,12 +28,12 @@ Projects, research, courses and journal posts are Markdown files in
 (with a shareable URL) and the homepage all update by themselves. You never
 need to touch the 3D code.
 
-| Section | Folder | Page | Look |
+| Section | Folder | Page | Ground |
 | --- | --- | --- | --- |
-| Projects | `src/content/projects/` | `/projects/<name>/` | slate stoneware |
-| Research | `src/content/research/` | `/research/<name>/` | tenmoku, on dark wood |
-| Coursework | `src/content/courses/` | `/coursework/<name>/` | celadon |
-| Journal (About page) | `src/content/journal/` | `/about/<name>/` | shino ash |
+| Projects | `src/content/projects/` | `/projects/<name>/` | earthen brown |
+| Research | `src/content/research/` | `/research/<name>/` | deep green |
+| Coursework | `src/content/courses/` | `/coursework/<name>/` | olive |
+| Journal (About page) | `src/content/journal/` | `/about/<name>/` | aged-wood taupe |
 
 ### Add a project (research, course and journal work the same way)
 
@@ -89,6 +89,7 @@ or `"present"` for an end date.
 | Camera position / field look per section | `src/experience/core/acts.ts` |
 | The field itself (ring shape, terraces, waves) | `src/experience/shaders/common.ts` and its CPU twin `core/field.ts` |
 | Line work, lighting, woodcut print | `src/experience/shaders/specimen.ts` |
+| Section page colours (the four grounds) | top of `src/styles/sections.css` |
 | Type scale, spacing | `src/styles/tokens.css` |
 
 ## Deploying

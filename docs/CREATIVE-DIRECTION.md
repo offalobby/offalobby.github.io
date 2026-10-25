@@ -161,26 +161,23 @@ device struggles; tiers already trade it off. The three.js + R3F bundle is
   ScrollTrigger) so text and camera move together; off with reduced motion.
 - **No CSS `filter` on elements that move over the canvas.**
 
-## The section pages: kintsugi
+## The section pages: quiet grounds
 
-The 3D homepage is the specimen; the section pages are the pieces in the
-collection. Each page is a studio backdrop with glazed pieces resting on it,
-and every piece is a shard: an irregular `clip-path` laid over gold, so the
-gaps between neighbouring shards read as repaired breaks that widen and
-narrow. Long repairs (the research timeline, the break under every entry's
-title) are filled SVG ribbons whose width varies along their length, like
-lacquer that pooled. All geometry comes from a seed (the entry's slug), so a
-piece always has the same cracks and no two are alike (`src/lib/kintsugi.ts`).
+The 3D homepage is the one loud moment. The section pages are where people
+read, so they are Japanese-minimal: a dark, tea-coloured ground, soft
+washi-coloured text, generous space, hairline rules, and a single faint gold
+crack under each title as the only ornament. No cards, no textures, no 3D.
 
-| Section | Glaze (from the reference bowls) | Layout |
+| Section | Ground | Meaning (tea ceremony / kimono colours) |
 | --- | --- | --- |
-| Projects | slate-blue matte stoneware | a stack of wide shards |
-| Research | indigo tenmoku with hare's-fur streaks, on a dark table | one long repair running down through every entry |
-| Coursework | celadon, with tea-coloured shards per area (hojicha, matcha, slate, ash, kuro) | semesters as rows of mosaic tiles |
-| About | shino ash, cream to charcoal, on linen | journal feed beside an "at a glance" shard |
+| Projects | tsuchi, earthen brown `#3a2d24` | stability, the raw material |
+| Research | fukamidori, deep green `#252b23` | growth, the living world |
+| Coursework | uguisu, olive `#34362a` | harmony, learning in season |
+| About | rikyū, aged-wood taupe `#38342c`, ochre accent | quiet, unpretentious warmth |
 
-The gold is the one constant. Textures (speckle, mottling, streaks) are tiny
-inline SVG noise filters, so the pages ship no images of their own.
+Text is `#e6dfce` with `#b9b09d` for secondary lines, so contrast stays
+comfortable rather than stark. The cracks are thin SVG ribbons generated from a
+seed (`src/lib/crack.ts`), so each page always has the same one.
 
 ## Roadmap
 
@@ -191,10 +188,10 @@ field morphs (rings → waves → print), loader + one opening sequence, depth
 gauge, live readout, pith annotation, index menu, motion toggle, quality tiers,
 SVG fallback, GitHub Pages workflow.
 
-**Phase 3, built (kintsugi):** content collections for projects, research,
+**Phase 3, built:** content collections for projects, research,
 courses and journal; list and detail pages for each, with stable URLs, no 3D
 required; homepage panels list real entries; the index menu links to pages.
-The section pages are dressed as kintsugi (see below).
+The section pages use quiet tea-coloured grounds (see above).
 
 **Phase 3, originally planned:** content collections (`projects`, `research`,
 `coursework`) with zod schemas; `/projects/[slug]` and `/research/[slug]`

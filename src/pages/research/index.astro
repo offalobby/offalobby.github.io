@@ -1,61 +1,41 @@
 ---
-import Vessel from '../../layouts/Vessel.astro';
-import Seam from '../../components/kintsugi/Seam.astro';
+import Section from '../../layouts/Section.astro';
+import Crack from '../../components/section/Crack.astro';
 import { getResearch, url } from '../../lib/content';
 import { formatRange } from '../../lib/dates';
-import { shardClip, tone } from '../../lib/kintsugi';
 
 const entries = await getResearch();
 ---
 
-<Vessel
+<Section
   title="Research"
-  glaze="tenmoku"
+  ground="fukamidori"
   description="Research by Afolabi Durodola: graph learning for genomics, sickle cell biomarkers, and PKU gene therapy."
 >
   <header class="page-head">
-    <p class="crumb">Research <span class="count">({entries.length})</span></p>
-    <h1>Research, one line running through it</h1>
-    <p class="lede">
-      From gene therapy at the bench to graph learning on genomes. Most recent first; each entry opens into
-      the question, methods and results.
-    </p>
+    <p class="label">{entries.length} research positions</p>
+    <h1>Research</h1>
+    <Crack class="crack-rule" seed="research" />
+    <p class="lede">From gene therapy at the bench to graph learning on genomes. Most recent first.</p>
   </header>
 
-  <div class="research-wrap">
-  <Seam seed="research-spine" orientation="v" span={26} weight={4} branches={4} />
-  <ol class="research-list" role="list">
+  <ol class="rows" role="list">
     {
       entries.map((r) => (
         <li>
-          <Seam class="tie" seed={`${r.id}:tie`} span={22} weight={2.4} branches={0} />
-          <article class="study glazed shard" style={`--clip:${shardClip(r.id, 18, { across: 4, down: 2 })};--tone:${tone(r.id)}`}>
-            <div class="shard-body">
-              <p class="when">
-                {formatRange(r.data.start, r.data.end)}, {r.data.role}
-              </p>
-              <h2>
-                <a class="shard-link" href={url(`/research/${r.id}/`)}>
-                  {r.data.title}
-                </a>
-              </h2>
-              <p class="lab">
-                {r.data.lab}
-                {r.data.group && `, ${r.data.group}`}. {r.data.institution}
-              </p>
-              <p>{r.data.summary}</p>
-              {r.data.methods.length > 0 && (
-                <ul class="tags" aria-label="Methods">
-                  {r.data.methods.map((m) => (
-                    <li>{m}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </article>
+          <a class="row" href={url(`/research/${r.id}/`)}>
+            <span class="when">{formatRange(r.data.start, r.data.end)}</span>
+            <span>
+              <span class="title">{r.data.title}</span>
+              <span class="sub">
+                {r.data.lab}, {r.data.institution}
+              </span>
+              <span class="sum">{r.data.summary}</span>
+            </span>
+            <span class="where">{r.data.role}</span>
+          </a>
         </li>
       ))
     }
   </ol>
-  </div>
-</Vessel>
+</Section>

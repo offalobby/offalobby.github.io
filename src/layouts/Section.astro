@@ -1,31 +1,31 @@
 ---
 /**
  * Section pages (projects, research, coursework, about, and every entry).
- * No 3D here: these pages are for reading, so they are plain HTML and CSS,
- * dressed in the section's glaze, with gold seams between the pieces.
+ * No 3D here: these pages are for reading. Plain HTML and CSS on a dark,
+ * tea-coloured ground, with a faint gold crack or two as the only ornament.
  */
 import Base from './Base.astro';
 import IndexMenu from '../components/IndexMenu.astro';
 import IndexButton from '../components/IndexButton.astro';
-import GoldDefs from '../components/kintsugi/GoldDefs.astro';
+import GoldDefs from '../components/section/GoldDefs.astro';
 import { site } from '../data/site';
-import '../styles/kintsugi.css';
+import '../styles/sections.css';
 
 interface Props {
   title: string;
   description?: string;
-  glaze: 'celadon' | 'slate' | 'tenmoku' | 'shino';
+  ground: 'tsuchi' | 'fukamidori' | 'uguisu' | 'rikyu';
   /** the section this page belongs to, shown beside the wordmark */
   section?: { label: string; href: string };
 }
-const { title, description, glaze, section } = Astro.props;
+const { title, description, ground, section } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const year = new Date().getFullYear();
 ---
 
-<Base title={`${title} — ${site.wordmark}`} description={description} glaze={glaze}>
+<Base title={`${title} — ${site.wordmark}`} description={description} ground={ground}>
   <a class="skip-link" href="#main">Skip to content</a>
-  <div class="vessel" data-glaze={glaze}>
+  <div class="section-page" data-ground={ground}>
     <GoldDefs />
     <header class="masthead">
       <span class="masthead-trail">
@@ -41,9 +41,7 @@ const year = new Date().getFullYear();
       <slot />
     </main>
 
-    <footer class="page-foot">
-      {site.wordmark}, {year}. Every piece here was broken, repaired, and kept.
-    </footer>
+    <footer class="page-foot">{site.wordmark}, {year}.</footer>
   </div>
   <IndexMenu />
 

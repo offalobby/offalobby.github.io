@@ -1,23 +1,21 @@
 ---
 import { Image } from 'astro:assets';
-import Vessel from '../../layouts/Vessel.astro';
-import Seam from '../../components/kintsugi/Seam.astro';
+import Section from '../../layouts/Section.astro';
+import Crack from '../../components/section/Crack.astro';
 import { getJournal, url } from '../../lib/content';
 import { formatDate } from '../../lib/dates';
-import { shardClip } from '../../lib/kintsugi';
 import { about } from '../../data/about';
 import { site } from '../../data/site';
 
 const entries = await getJournal();
 ---
 
-<Vessel title="About" glaze="shino" description={`About ${site.name}, and a journal of things outside the lab.`}>
+<Section title="About" ground="rikyu" description={`About ${site.name}, and a journal of things outside the lab.`}>
   <header class="page-head">
-    <p class="crumb">About</p>
+    <p class="label">About</p>
     <h1>{site.name}</h1>
-    <p class="lede">
-      {about.education.degree}, {about.education.school}. {about.education.expected}.
-    </p>
+    <Crack class="crack-rule" seed="about" />
+    <p class="lede">{about.education.degree}, {about.education.school}. {about.education.expected}.</p>
   </header>
 
   <div class="about-grid">
@@ -27,8 +25,7 @@ const entries = await getJournal();
           <p class="bio">{about.bio}</p>
         ) : (
           <p class="placeholder-note">
-            <b>Placeholder.</b> A few sentences in your own words go here: who you are, what draws you to
-            engineering. Edit <code>bio</code> in src/data/about.ts.
+            <b>Placeholder.</b> A few sentences in your own words go here. Edit <code>bio</code> in src/data/about.ts.
           </p>
         )
       }
@@ -38,24 +35,24 @@ const entries = await getJournal();
         {
           entries.length === 0 ? (
             <p class="empty">
-              Nothing posted yet. Entries appear here newest first: copy <code>src/content/journal/_template.md</code>{' '}
-              to start one.
+              Nothing posted yet. Copy <code>src/content/journal/_template.md</code> to write the first entry.
             </p>
           ) : (
-            <ol class="journal-list" role="list">
-              {entries.map((e, i) => (
+            <ol class="rows" role="list">
+              {entries.map((e) => (
                 <li>
-                  {i > 0 && <Seam seed={`${e.id}:sep`} span={18} weight={2} branches={1} />}
-                  <article class="journal-item">
-                    <time datetime={e.data.date.toISOString().slice(0, 10)}>{formatDate(e.data.date)}</time>
-                    <h3>
-                      <a href={url(`/about/${e.id}/`)}>{e.data.title}</a>
-                    </h3>
-                    {e.data.summary && <p>{e.data.summary}</p>}
-                    {e.data.cover && (
-                      <Image class="thumb" src={e.data.cover} alt={e.data.coverAlt ?? ''} widths={[480, 960]} sizes="(max-width: 600px) 100vw, 34rem" />
-                    )}
-                  </article>
+                  <a class="row journal-row" href={url(`/about/${e.id}/`)}>
+                    <span class="when">
+                      <time datetime={e.data.date.toISOString().slice(0, 10)}>{formatDate(e.data.date)}</time>
+                    </span>
+                    <span>
+                      <span class="title">{e.data.title}</span>
+                      {e.data.summary && <span class="sum">{e.data.summary}</span>}
+                      {e.data.cover && (
+                        <Image class="journal-thumb" src={e.data.cover} alt={e.data.coverAlt ?? ''} widths={[480, 960]} sizes="(max-width: 600px) 100vw, 30rem" />
+                      )}
+                    </span>
+                  </a>
                 </li>
               ))}
             </ol>
@@ -64,55 +61,49 @@ const entries = await getJournal();
       </section>
     </div>
 
-    <aside class="glance glazed" aria-label="At a glance" style={`--clip:${shardClip('glance', 14, { across: 2, down: 4 })};--tone:0.6`}>
-      <h2>At a glance</h2>
+    <aside class="glance" aria-label="At a glance">
+      <dl>
+        <dt>Honors</dt>
+        {about.honors.map((h) => <dd>{h}</dd>)}
 
-      <h3>Honors</h3>
-      <ul>{about.honors.map((h) => <li>{h}</li>)}</ul>
-
-      <h3>Leadership</h3>
-      <ul>
+        <dt>Leadership</dt>
         {
           about.leadership.map((l) => (
-            <li>
-              {l.role}, {l.org} <span class="soft">{l.when}</span>
-            </li>
+            <dd>
+              {l.role}, {l.org} <span>{l.when}</span>
+            </dd>
           ))
         }
-      </ul>
 
-      <h3>Service</h3>
-      <ul>{about.service.map((s) => <li>{s}</li>)}</ul>
+        <dt>Service</dt>
+        {about.service.map((s) => <dd>{s}</dd>)}
 
-      <h3>Languages</h3>
-      <ul>
+        <dt>Languages</dt>
         {
           about.languages.map((l) => (
-            <li>
-              {l.name} <span class="soft">{l.level}</span>
-            </li>
+            <dd>
+              {l.name} <span>{l.level}</span>
+            </dd>
           ))
         }
-      </ul>
 
-      <h3>Affiliations</h3>
-      <ul>{about.affiliations.map((a) => <li>{a}</li>)}</ul>
+        <dt>Affiliations</dt>
+        {about.affiliations.map((a) => <dd>{a}</dd>)}
 
-      <h3>Interests</h3>
-      <ul>{about.interests.map((i) => <li>{i}</li>)}</ul>
+        <dt>Interests</dt>
+        {about.interests.map((i) => <dd>{i}</dd>)}
 
-      <h3>Elsewhere</h3>
-      <ul>
+        <dt>Elsewhere</dt>
         {
           about.links.map((l) => (
-            <li>
+            <dd>
               <a href={l.href} rel={l.href.startsWith('http') ? 'me noopener' : undefined}>
                 {l.label}
               </a>
-            </li>
+            </dd>
           ))
         }
-      </ul>
+      </dl>
     </aside>
   </div>
-</Vessel>
+</Section>

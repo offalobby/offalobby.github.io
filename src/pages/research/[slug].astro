@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
-import Vessel from '../../layouts/Vessel.astro';
-import EntryPage from '../../components/kintsugi/EntryPage.astro';
+import Section from '../../layouts/Section.astro';
+import EntryPage from '../../components/section/EntryPage.astro';
 import { getResearch, neighbours, hasText, url, type Research } from '../../lib/content';
 import { formatRange } from '../../lib/dates';
 
@@ -16,7 +16,7 @@ const { prev, next } = neighbours(all, entry.id);
 const link = (e?: Research) => e && { href: url(`/research/${e.id}/`), title: e.data.title };
 ---
 
-<Vessel title={d.title} glaze="tenmoku" description={d.summary} section={{ label: 'Research', href: '/research/' }}>
+<Section title={d.title} ground="fukamidori" description={d.summary} section={{ label: 'Research', href: '/research/' }}>
   <EntryPage
     seed={entry.id}
     section={{ label: 'Research', href: '/research/' }}
@@ -40,4 +40,4 @@ const link = (e?: Research) => e && { href: url(`/research/${e.id}/`), title: e.
   >
     <Content />
   </EntryPage>
-</Vessel>
+</Section>

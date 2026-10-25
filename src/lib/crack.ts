@@ -1,13 +1,10 @@
 /**
- * Kintsugi geometry, generated at build time.
+ * Faint gold cracks, generated at build time.
  *
- * Every seam and every shard outline is derived from a seed (usually the
- * entry's slug), so a given project always has the same cracks, page after
- * page and build after build, while no two pieces are alike.
- *
- * Seams are drawn as filled ribbons rather than strokes: real gold repair
- * lines swell where lacquer pooled and thin where the break was tight, and a
- * ribbon with a varying width is the cheapest honest way to get that.
+ * Each crack is derived from a seed (usually the page or entry slug), so a page
+ * always has the same crack, build after build, while no two are alike. Cracks
+ * are drawn as thin filled ribbons rather than strokes so the line can swell
+ * and thin along its length, the way a real hairline repair does.
  */
 
 // ---------------------------------------------------------------- random --
@@ -134,50 +131,4 @@ export function seam(seed: string, opts: SeamOptions = {}): Seam {
     return { viewBox: `0 0 ${span} ${length}`, paths: paths.map(swap) };
   }
   return { viewBox: `0 0 ${length} ${span}`, paths };
-}
-
-// ----------------------------------------------------------------- shard --
-
-/**
- * An irregular quadrilateral for CSS clip-path, in pixels from each edge.
- * Laid on a gold background with a small gap, neighbouring shards leave
- * seams that widen and narrow the way repaired breaks do.
- */
-export interface ShardShape {
-  /** extra break points along the top and bottom edges (wide shards want more) */
-  across?: number;
-  /** extra break points down the left and right edges */
-  down?: number;
-}
-
-export function shardClip(seed: string, jitter = 6, shape: ShardShape = {}): string {
-  const { across = 1, down = 1 } = shape;
-  const r = random(seed);
-  // squared: mostly tight breaks, now and then a wide pool of gold
-  const j = () => f(r() * r() * jitter);
-  const along = (n: number) =>
-    Array.from({ length: n }, (_, i) => f(((i + 0.25 + r() * 0.5) / n) * 100)).map(Number);
-  const top = along(across).map((x) => `${x}% ${j()}px`);
-  const right = along(down).map((y) => `calc(100% - ${j()}px) ${y}%`);
-  const bottom = along(across)
-    .reverse()
-    .map((x) => `${x}% calc(100% - ${j()}px)`);
-  const left = along(down)
-    .reverse()
-    .map((y) => `${j()}px ${y}%`);
-  return `polygon(${[
-    `${j()}px ${j()}px`,
-    ...top,
-    `calc(100% - ${j()}px) ${j()}px`,
-    ...right,
-    `calc(100% - ${j()}px) calc(100% - ${j()}px)`,
-    ...bottom,
-    `${j()}px calc(100% - ${j()}px)`,
-    ...left,
-  ].join(', ')})`;
-}
-
-/** A tone between 0 and 1, so neighbouring shards are slightly different glazes. */
-export function tone(seed: string): number {
-  return Math.round(random(`${seed}:tone`)() * 100) / 100;
 }
