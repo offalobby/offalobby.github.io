@@ -1,7 +1,7 @@
 ---
 title: "Graph learning for genomic repeat detection"
 summary: "Graph neural networks and self-supervised learning, applied to a framework that uses graph embeddings to detect repeats in genomes."
-lab: "Seggara Lab"
+lab: "Segarra Lab"
 group: "Graph Signal Processing (GSP) & Machine Learning Laboratory"
 institution: "Rice University"
 role: "Undergraduate Researcher"
