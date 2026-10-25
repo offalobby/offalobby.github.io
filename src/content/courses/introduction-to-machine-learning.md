@@ -1,9 +1,10 @@
 ---
-# Add the semester when you know it, e.g.
-# term: "Fall"
-# year: 2025
-title: "Analog Circuits"
-area: "Circuits & devices"
+title: "Introduction to Machine Learning"
+code: "ELEC 478"
+term: "Fall"
+year: 2026
+credits: 3
+area: "Engineering"
 ---
 
 <!--

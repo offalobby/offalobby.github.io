@@ -24,8 +24,9 @@ const projects = (await getProjects()).filter((p) => d.projects.includes(p.id));
     title={d.title}
     lede={d.summary}
     facts={[
-      { label: 'Semester', value: d.term && d.year ? `${d.term} ${d.year}` : 'Not yet placed' },
+      { label: 'Semester', value: d.term && d.year ? `${d.term} ${d.year}` : 'Not set yet' },
       { label: 'Course code', value: d.code },
+      { label: 'Credits', value: d.credits !== undefined ? String(d.credits) : undefined },
       { label: 'Area', value: d.area },
       { label: 'Where', value: d.location ? `${d.institution}, ${d.location}` : d.institution },
       { label: 'Related projects', links: projects.map((p) => ({ label: p.data.title, href: url(`/projects/${p.id}/`) })) },

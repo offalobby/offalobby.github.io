@@ -1,9 +1,10 @@
 ---
-# Add the semester when you know it, e.g.
-# term: "Fall"
-# year: 2025
-title: "Introduction to Machine Learning"
-area: "Signals & data"
+title: "Organic Chemistry I"
+code: "CHEM 211"
+term: "Fall"
+year: 2025
+credits: 3
+area: "Natural sciences"
 ---
 
 <!--

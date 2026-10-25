@@ -1,9 +1,10 @@
 ---
-# Add the semester when you know it, e.g.
-# term: "Fall"
-# year: 2025
 title: "Honors Linear Algebra"
-area: "Mathematics"
+code: "MATH 354"
+term: "Spring"
+year: 2025
+credits: 3
+area: "Mathematics & statistics"
 ---
 
 <!--
