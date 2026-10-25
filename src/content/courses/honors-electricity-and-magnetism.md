@@ -1,9 +1,10 @@
 ---
-# Add the semester when you know it, e.g.
-# term: "Fall"
-# year: 2025
-title: "Introduction to Physical Electronics"
-area: "Circuits & devices"
+title: "Honors Electricity & Magnetism (with Lab)"
+code: "PHYS 112"
+term: "Spring"
+year: 2025
+credits: 4
+area: "Natural sciences"
 ---
 
 <!--

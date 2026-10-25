@@ -27,7 +27,7 @@ const lists = {
   courses: courses.slice(0, 5).map((c) => ({
     href: url(`/coursework/${c.id}/`),
     title: c.data.title,
-    meta: c.data.term && c.data.year ? `${c.data.term} ${c.data.year}` : c.data.area,
+    meta: [c.data.code, c.data.term && c.data.year ? `${c.data.term} ${c.data.year}` : undefined].filter(Boolean).join(', '),
   })),
 };
 const totals = { projects: projects.length, research: lists.research.length, courses: courses.length };

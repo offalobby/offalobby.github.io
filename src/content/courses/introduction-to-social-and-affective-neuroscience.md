@@ -1,8 +1,10 @@
 ---
-title: "Social & Affective Neuroscience"
+title: "Introduction to Social and Affective Neuroscience"
+code: "PSYC 354"
 term: "Summer"
 year: 2025
-area: "Beyond engineering"
+credits: 3
+area: "Humanities & social sciences"
 institution: "Rice Global Paris Centre"
 location: "Paris, France"
 summary: "Intensive upper-division course on the neurobiology of social cognition, emotion, motivation and emotion regulation."

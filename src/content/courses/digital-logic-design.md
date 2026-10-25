@@ -1,9 +1,10 @@
 ---
-# Add the semester when you know it, e.g.
-# term: "Fall"
-# year: 2025
 title: "Digital Logic Design"
-area: "Digital & computing"
+code: "ELEC 326"
+term: "Fall"
+year: 2026
+credits: 3
+area: "Engineering"
 ---
 
 <!--

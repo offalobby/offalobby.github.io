@@ -1,10 +1,11 @@
 ---
 # One file per course. Add term + year to place it in a semester.
 title: "Course name"
-# code: "ELEC 220"
+code: "ELEC 220"          # optional
 term: "Fall"              # Spring | Summer | Fall
 year: 2025
-area: "Digital & computing"   # Circuits & devices | Digital & computing | Signals & data | Mathematics | Beyond engineering
+credits: 3                # optional; semesters show their total
+area: "Engineering"       # Engineering | Computing | Mathematics & statistics | Natural sciences | Research | Humanities & social sciences | Business
 # summary: "One line shown in the semester view."
 # projects: ["fpga-verilog"]  # related project folder names
 # draft: true

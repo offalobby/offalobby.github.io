@@ -1,9 +1,10 @@
 ---
-# Add the semester when you know it, e.g.
-# term: "Fall"
-# year: 2025
-title: "Probability & Statistics"
-area: "Mathematics"
+title: "General Chemistry II"
+code: "CHEM 122"
+term: "Spring"
+year: 2025
+credits: 3
+area: "Natural sciences"
 ---
 
 <!--

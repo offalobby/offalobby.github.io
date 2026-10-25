@@ -1,9 +1,10 @@
 ---
-# Add the semester when you know it, e.g.
-# term: "Fall"
-# year: 2025
-title: "Random Signals"
-area: "Signals & data"
+title: "Founder's Journey"
+code: "BUSI 360"
+term: "Spring"
+year: 2026
+credits: 1
+area: "Business"
 ---
 
 <!--

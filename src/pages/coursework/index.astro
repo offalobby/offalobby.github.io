@@ -16,7 +16,10 @@ const total = semesters.reduce((n, s) => n + s.courses.length, 0);
     <p class="label">{total} courses</p>
     <h1>Coursework</h1>
     <Crack class="crack-rule" seed="coursework" />
-    <p class="lede">Electrical and Computer Engineering at Rice University, semester by semester.</p>
+    <p class="lede">
+      Electrical and Computer Engineering at Rice University, semester by semester, newest first. Open any course for
+      an overview.
+    </p>
   </header>
 
   {
@@ -25,7 +28,9 @@ const total = semesters.reduce((n, s) => n + s.courses.length, 0);
         <div class="semester-head">
           <h2 id={`sem-${s.id}`}>{s.sort === null ? 'Semester not set yet' : s.label}</h2>
           <span class="count">
-            {s.courses.length} {s.courses.length === 1 ? 'course' : 'courses'}
+            {[s.stage, s.credits ? `${s.credits} credits` : `${s.courses.length} ${s.courses.length === 1 ? 'course' : 'courses'}`]
+              .filter(Boolean)
+              .join(', ')}
           </span>
         </div>
         <ul class="courses" role="list">

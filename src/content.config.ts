@@ -76,11 +76,20 @@ const courses = defineCollection({
       title: z.string(),
       /** course code if you want it shown, e.g. "ELEC 220" */
       code: z.string().optional(),
-      /** leave both out until you know them; the course is then listed as "not yet placed" */
+      /** leave both out until you know them; the course is then listed as "semester not set yet" */
       term: z.enum(['Spring', 'Summer', 'Fall']).optional(),
       year: z.number().int().optional(),
-      /** groups courses by colour within a semester */
-      area: z.enum(['Circuits & devices', 'Digital & computing', 'Signals & data', 'Mathematics', 'Beyond engineering']),
+      /** orders courses within a semester (engineering first) */
+      area: z.enum([
+        'Engineering',
+        'Computing',
+        'Mathematics & statistics',
+        'Natural sciences',
+        'Research',
+        'Humanities & social sciences',
+        'Business',
+      ]),
+      credits: z.number().min(0).optional(),
       institution: z.string().default('Rice University'),
       location: z.string().optional(),
       /** one line for the semester view; the page body holds the rest */

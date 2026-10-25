@@ -1,9 +1,10 @@
 ---
-# Add the semester when you know it, e.g.
-# term: "Fall"
-# year: 2025
-title: "Signals, Systems & Transforms"
-area: "Signals & data"
+title: "Fundamentals of Computer Engineering"
+code: "ELEC 220"
+term: "Fall"
+year: 2024
+credits: 3
+area: "Engineering"
 ---
 
 <!--

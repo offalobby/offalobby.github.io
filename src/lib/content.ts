@@ -29,11 +29,13 @@ export async function getJournal(): Promise<JournalEntry[]> {
 
 const TERM_ORDER = { Spring: 0, Summer: 1, Fall: 2 } as const;
 export const AREAS = [
-  'Circuits & devices',
-  'Digital & computing',
-  'Signals & data',
-  'Mathematics',
-  'Beyond engineering',
+  'Engineering',
+  'Computing',
+  'Mathematics & statistics',
+  'Natural sciences',
+  'Research',
+  'Humanities & social sciences',
+  'Business',
 ] as const;
 
 export interface Semester {
@@ -42,6 +44,10 @@ export interface Semester {
   /** null for courses without a term yet */
   sort: number | null;
   courses: Course[];
+  /** sum of the courses' credits, when any are given */
+  credits: number;
+  /** "First year", "Summer after first year"... counted from the earliest fall */
+  stage?: string;
 }
 
 /** Courses grouped by semester, newest semester first; unplaced courses last. */
@@ -57,9 +63,24 @@ export async function getSemesters(): Promise<Semester[]> {
         label: term && year ? `${term} ${year}` : 'Not yet placed in a semester',
         sort: term && year ? year * 3 + TERM_ORDER[term] : null,
         courses: [],
+        credits: 0,
       });
     }
-    groups.get(id)!.courses.push(c);
+    const g = groups.get(id)!;
+    g.courses.push(c);
+    g.credits += c.data.credits ?? 0;
+  }
+  // year of study, counted from the first fall semester
+  const falls = all.filter((c) => c.data.term === 'Fall' && c.data.year).map((c) => c.data.year!);
+  const start = falls.length ? Math.min(...falls) : undefined;
+  const ORDINAL = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth'];
+  for (const g of groups.values()) {
+    const c = g.courses[0].data;
+    if (start === undefined || !c.term || !c.year) continue;
+    const academic = (c.term === 'Fall' ? c.year : c.year - 1) - start;
+    const ord = ORDINAL[academic];
+    if (!ord) continue;
+    g.stage = c.term === 'Summer' ? `Summer after ${ord.toLowerCase()} year` : `${ord} year`;
   }
   const byArea = (a: Course, b: Course) =>
     AREAS.indexOf(a.data.area) - AREAS.indexOf(b.data.area) || a.data.title.localeCompare(b.data.title);

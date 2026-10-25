@@ -35,7 +35,7 @@ export const about = {
     { name: 'Japanese', level: 'Limited working proficiency' },
     { name: 'Turkish', level: 'Elementary' },
   ],
-  interests: ['Croquetting', 'Gardening', 'Healthcare technologies', 'Judo / grappling', 'Reading', 'Eating good food'],
+  interests: ['Crocheting', 'Gardening', 'Healthcare technologies', 'Judo / grappling', 'Reading', 'Eating good food'],
   links: [
     { label: 'GitHub', href: 'https://github.com/offalobby' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/hirokidurodola' },
