@@ -19,8 +19,8 @@ export const site = {
 
 export const intro = {
   /** Each entry is one line of the display heading. */
-  heading: ['A record of growth,', 'kept in layers.'],
-  body: 'I study electrical engineering. This site is where my coursework, projects and research accumulate, with the newest work at the outer edge.',
+  heading: ['ECE Portfolio'],
+  body: 'I study how to power and program technology. This site is where my coursework, projects and research accumulate, with the newest work at the outer edge.',
   /** Shown beside the pith of the 3D specimen. */
   originLabel: 'Pith. Where the record starts.',
 };
