@@ -56,7 +56,7 @@ export const acts: ActContent[] = [
     plate: 'Plate II. Section through the strata',
     heading: 'Coursework, laid down semester by semester',
     body: [
-      'Seen from the side, each terrace of this formation is a layer of time. Each layer stands for one semester: the courses taken, the ideas that stuck, and the projects they led to.',
+      '',
     ],
     entries: 'courses',
     more: { label: 'All coursework', href: '/coursework/' },
@@ -86,7 +86,7 @@ export const acts: ActContent[] = [
     plate: 'Plate V. Transverse section, printed',
     heading: 'The archive is still growing',
     body: [
-      'Every ring in this print is a layer of work. The outermost one is always the current semester.',
+      'Thank you so much for checking out my website!! And a special thanks the creators of this website (https://www.junkbranding.com/) for my design inspiration.',
     ],
     more: { label: 'About me, and a journal', href: '/about/' },
     subsections: [
