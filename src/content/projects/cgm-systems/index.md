@@ -1,7 +1,7 @@
 ---
 title: "Continuous Glucose Monitoring (CGM) Systems"
 summary: "A technical research project on CGM systems: embedded architecture, analog front end, signal processing and wireless links."
-start: "2025-01"
+start: "Fall 2024"
 context: "Rice University"
 tools:
   - Embedded systems

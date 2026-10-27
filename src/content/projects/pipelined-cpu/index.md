@@ -2,7 +2,7 @@
 title: "Pipelined CPU Microarchitecture & SystemVerilog Verification"
 summary: "A 5-stage pipelined processor in Verilog/SystemVerilog with hazard detection, forwarding and branch control, verified by automated regression tests."
 start: "2026-02"
-end: "2026-05"
+end: "2026-08"
 context: "Personal"
 tools:
   - Verilog

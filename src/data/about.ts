@@ -1,5 +1,5 @@
 /**
- * The facts on the About page. All of it comes from the resume (Oct 2026);
+ * The facts on the About page. All of it comes from the resume (public/resume.pdf, Oct 2026);
  * edit freely. Your own words go in `bio`; journal entries live in
  * src/content/journal/.
  */
@@ -43,5 +43,6 @@ export const about = {
     { label: 'GitHub', href: 'https://github.com/offalobby' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/hirokidurodola' },
     { label: 'Email', href: 'mailto:ad207@rice.edu' },
+    { label: 'Resume (PDF)', href: '/resume.pdf' },
   ],
 };
