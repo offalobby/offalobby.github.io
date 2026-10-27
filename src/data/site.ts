@@ -94,7 +94,7 @@ export const acts: ActContent[] = [
         id: 'resume',
         heading: 'Resume',
         body: ['A one-page PDF, kept current.'],
-        links: [{ label: 'Resume (PDF)', href: 'resume.pdf', disabled: true, note: 'add public/resume.pdf' }],
+        links: [{ label: 'Resume (PDF)', href: '/resume.pdf' }],
       },
       {
         id: 'contact',

@@ -1,7 +1,7 @@
 ---
 title: "Hardware & PCB Design Projects"
 summary: "Custom PCBs designed, simulated, fabricated and soldered, combining analog and digital circuits."
-start: "Fall 2026"
+start: "Spring 2026"
 context: "Rice University"
 tools:
   - Op-amps

@@ -1,9 +1,8 @@
 ---
 title: "AI for Drug Discovery"
 summary: "An RDKit/DeepChem pipeline that screened 41,127 compounds, reaching 7.7× enrichment over random selection."
-status: "ongoing"
-start: "Fall 2026"
-end: "present"
+start: "Fall 2025"
+end: "Summer 2026"
 context: "Personal"
 tools:
   - Python
