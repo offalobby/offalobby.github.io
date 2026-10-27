@@ -12,7 +12,7 @@ tools:
 featured: true
 ---
 
-Developed and optimized C++ GPU kernels using CUDA/HIP for sparse graph computation, implementing parallel memory optimizations and benchmarking performance against CPU and GPU baselines.
+Developing and optimizing C++ GPU kernels using CUDA/HIP for sparse graph computation, implementing parallel memory optimizations and benchmarking performance against CPU and GPU baselines.
 
 <!--
   Add as much or as little as you like below. Suggested sections:
