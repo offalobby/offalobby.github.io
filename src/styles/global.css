@@ -387,9 +387,6 @@ main {
   line-height: 1.04;
   letter-spacing: -0.01em;
   white-space: nowrap;
-  /* keep the title where the earlier three-line heading placed it:
-     the hero is bottom-aligned, so the heading's box keeps that height */
-  min-height: calc(3 * 1.04 * var(--display));
 }
 .hero h1 .line {
   display: block;
@@ -401,7 +398,7 @@ main {
   display: block;
 }
 .hero-meta {
-  margin-top: clamp(2.4rem, 5.5vh, 3.8rem);
+  margin-top: clamp(2.6rem, 6.5vh, 4.4rem);
   max-width: 38ch;
 }
 .byline {
