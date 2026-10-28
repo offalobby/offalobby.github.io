@@ -114,6 +114,6 @@ the domain root, `base` in `astro.config.mjs` stays `/`.
 
 ## Licences
 
-Fonts: Newsreader, Hanken Grotesk and IBM Plex Mono, SIL Open Font License
+Fonts: Zen Kaku Gothic New and IBM Plex Mono, SIL Open Font License
 (copies in `public/licenses/`). No third-party images or 3D assets are used;
 everything visual is generated.

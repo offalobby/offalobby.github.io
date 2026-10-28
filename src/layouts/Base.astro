@@ -2,8 +2,8 @@
 import '../styles/global.css';
 import { site } from '../data/site';
 // the two faces visible in the first frame; fetched early so text never reflows under the reveal
-import newsreaderUrl from '../assets/fonts/newsreader-var.woff2?url';
-import hankenUrl from '../assets/fonts/hanken-grotesk-var.woff2?url';
+import zenRegularUrl from '../assets/fonts/zen-kaku-gothic-new-400.woff2?url';
+import zenMediumUrl from '../assets/fonts/zen-kaku-gothic-new-500.woff2?url';
 
 interface Props {
   title?: string;
@@ -31,8 +31,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
-    <link rel="preload" href={newsreaderUrl} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={hankenUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={zenMediumUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={zenRegularUrl} as="font" type="font/woff2" crossorigin />
     <script is:inline>
       // Set motion preference before first paint so nothing animates that shouldn't.
       (function () {

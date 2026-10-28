@@ -23,7 +23,6 @@ body {
   font-family: var(--sans);
   font-size: var(--step-0);
   line-height: 1.55;
-  font-optical-sizing: auto;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -151,8 +150,8 @@ a:hover {
   pointer-events: auto;
 }
 .wordmark {
-  font: italic 400 var(--step-1) / 1 var(--serif);
-  letter-spacing: 0.005em;
+  font: 500 var(--step-0) / 1 var(--sans);
+  letter-spacing: 0.04em;
   text-decoration: none;
 }
 .masthead-tools {
@@ -381,12 +380,11 @@ main {
 }
 .hero h1 {
   margin: 0;
-  font-family: var(--serif);
-  font-weight: 300;
+  font-family: var(--sans);
+  font-weight: 500;
   font-size: var(--display);
-  line-height: 0.98;
-  letter-spacing: -0.024em;
-  font-variation-settings: 'opsz' 72;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
   max-width: 11ch;
   text-wrap: balance;
 }
@@ -405,7 +403,7 @@ main {
 }
 .byline {
   margin: 0 0 1.1rem;
-  font: 400 var(--step-1) / 1.3 var(--serif);
+  font: 500 var(--step-1) / 1.3 var(--sans);
 }
 .byline span {
   display: block;
@@ -480,9 +478,8 @@ main {
 }
 .act h2 {
   margin: 0 0 1.6rem;
-  font: 300 clamp(2.2rem, 1.3rem + 3vw, 3.9rem) / 1.03 var(--serif);
+  font: 500 clamp(2.2rem, 1.3rem + 3vw, 3.9rem) / 1.03 var(--sans);
   letter-spacing: -0.012em;
-  font-variation-settings: 'opsz' 60;
   text-wrap: balance;
 }
 .act p {
@@ -519,7 +516,7 @@ main {
   transition: padding 0.35s var(--ease-out);
 }
 .act-entries .t {
-  font: 400 1.18rem / 1.25 var(--serif);
+  font: 500 1.1rem / 1.3 var(--sans);
   color: var(--text);
 }
 .act-entries .m,
@@ -552,7 +549,7 @@ main {
 }
 .subsections h3 {
   margin: 0 0 0.5rem;
-  font: 400 var(--step-1) / 1.2 var(--serif);
+  font: 500 var(--step-1) / 1.2 var(--sans);
 }
 .subsections p {
   font-size: 0.94rem;
@@ -659,7 +656,7 @@ main {
   text-decoration: none;
 }
 .index a .label {
-  font: 300 clamp(1.9rem, 1.2rem + 3.4vw, 4rem) / 1 var(--serif);
+  font: 500 clamp(1.9rem, 1.2rem + 3.4vw, 4rem) / 1 var(--sans);
   letter-spacing: -0.015em;
   transition: translate 0.4s var(--ease-out);
 }
@@ -671,7 +668,6 @@ main {
 .index a:hover .label,
 .index a:focus-visible .label {
   translate: 0.4em 0;
-  font-style: italic;
 }
 .index-foot {
   font: 400 0.72rem / 1.5 var(--mono);

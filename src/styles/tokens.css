@@ -1,22 +1,16 @@
 /* Fonts are self-hosted, Latin-subset WOFF2 (SIL Open Font License; see /licenses). */
 @font-face {
-  font-family: 'Newsreader';
-  src: url('../assets/fonts/newsreader-var.woff2') format('woff2');
-  font-weight: 200 800;
+  font-family: 'Zen Kaku Gothic New';
+  src: url('../assets/fonts/zen-kaku-gothic-new-400.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Newsreader';
-  src: url('../assets/fonts/newsreader-italic-var.woff2') format('woff2');
-  font-weight: 200 800;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Hanken Grotesk';
-  src: url('../assets/fonts/hanken-grotesk-var.woff2') format('woff2');
-  font-weight: 100 900;
+  font-family: 'Zen Kaku Gothic New';
+  src: url('../assets/fonts/zen-kaku-gothic-new-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
   font-display: swap;
 }
 @font-face {
@@ -52,8 +46,8 @@
   --accent: var(--copper);
   --scrim: color-mix(in oklab, var(--loam) 78%, transparent);
 
-  --serif: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
-  --sans: 'Hanken Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  /* one face for everything but the scientific labels: headings 500, text 400 */
+  --sans: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic', 'Helvetica Neue', Arial, sans-serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   /* type scale: 1.25 minor-third steps from 1rem */
