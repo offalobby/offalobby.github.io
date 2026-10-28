@@ -116,8 +116,9 @@ Key decisions:
 - **Shader logic is mirrored on the CPU** (`field.ts`) so the DOM can point at
   things in the 3D scene (the pith annotation), and the no-WebGL fallback is
   drawn from the real field, not a stock image.
-- **Fonts are self-hosted** WOFF2 Latin subsets (OFL): Newsreader (display
-  serif, optical sizes), Hanken Grotesk (text), IBM Plex Mono (annotations).
+- **Fonts are self-hosted** WOFF2 Latin subsets (OFL): Zen Kaku Gothic New for
+  everything you read (headings and navigation at 500, text at 400) and IBM
+  Plex Mono for plate numbers and scientific labels.
 
 ## Performance and degradation
 
