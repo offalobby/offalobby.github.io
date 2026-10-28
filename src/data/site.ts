@@ -19,7 +19,7 @@ export const site = {
 
 export const intro = {
   /** Each entry is one line of the display heading. */
-  heading: ['ECE Portfolio'],
+  heading: ['ECE Portfolio', '\u00A0'],
   body: 'I study how to power and program technology. This site is where my coursework, projects and research accumulate, with the newest work at the outer edge.',
   /** Shown beside the pith of the 3D specimen. */
   originLabel: 'Pith. Where the record starts.',
