@@ -19,4 +19,4 @@ But other than reading I enjoy spending a lot of time with my family and friends
 
 works I also really enjoy: Ghibli movies, FromSoftware graphic masterpieces, and (recently) Cyberpunk Edgerunners!!!
 
-![What the photo shows](./photo.jpg "A caption")
+![Me and my mom at a concert!!](./pictures/afo&mom.jpg)
