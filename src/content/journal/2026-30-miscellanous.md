@@ -3,7 +3,7 @@
 # Name the copy after the entry, e.g. 2026-10-garden.md
 title: "Miscellanous"
 date: 2026-10-25
-summary: "Optional line shown in the list."
+summary: "brief!"
 # cover: "./photo.jpg"     # for a folder entry: journal/2026-10-garden/index.md + photo.jpg
 # coverAlt: "What the photo shows"
 tags:
